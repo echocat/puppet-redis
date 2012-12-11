@@ -1,7 +1,7 @@
 class redis {}
 
 class redis::server(
-		$redis_version = "2.6.4",
+		$redis_version = "2.6.7",
 		$redis_memory = 100,
 		$redis_ip = "127.0.0.1",
 		$redis_port = 6379,
