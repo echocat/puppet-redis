@@ -19,13 +19,14 @@
 [ "$NETWORKING" = "no" ] && exit 0
 
 redis="/opt/redis/redis-server"
-prog=$(basename $redis)
+prog="$(basename $redis)_<%= redis_name %>"
+pidfile="/var/run/redis_<%= redis_name %>.pid"
 
-REDIS_CONF_FILE="/etc/redis.conf"
+REDIS_CONF_FILE="/etc/redis_<%= redis_name %>.conf"
 
-[ -f /etc/sysconfig/redis ] && . /etc/sysconfig/redis
+#[ -f /etc/sysconfig/redis ] && . /etc/sysconfig/redis
 
-lockfile=/var/lock/subsys/redis
+lockfile="/var/lock/subsys/redis_<%= redis_name %>"
 
 start() {
     [ -x $redis ] || exit 5
@@ -64,7 +65,9 @@ force_reload() {
 }
 
 rh_status() {
-    status $prog
+    status -p $pidfile
+    retval=$?
+    return $retval
 }
 
 rh_status_q() {
