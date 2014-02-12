@@ -1,10 +1,10 @@
 # Module redis
 
 This module installs and makes basic configs for multiple redis instances on the same node.
-It installs redis from source. (http://redis.googlecode.com)
+It installs redis from source. (http://redis.io/)
 
 # Tested on
-RHEL/CentOS/Scientific 6+
+RHEL/CentOS/Scientific 6+/Ubuntu 12.04
 
 # Sample usage:
 
@@ -12,6 +12,7 @@ RHEL/CentOS/Scientific 6+
 <pre>
 node "redis.my.domain" {
 
+    # install latest stable build.
 	include redis::install
 
 	redis::server {

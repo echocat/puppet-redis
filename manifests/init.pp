@@ -6,7 +6,7 @@
 #
 # None.
 #
-class redis {}
+class redis inherits redis::params {}
 
 # == Class: redis::install
 #
@@ -16,42 +16,118 @@ class redis {}
 # === Parameters
 #
 # [*redis_version*]
-#   The redis version to be installed.
+#   The redis version to be installed. By default, the latest stable build will be installed.
+#
+# [*redis_build_dir*]
+#   The dir to store redis source code.
+#
+# [*redis_install_dir*]
+#   The dir to which the newly built redis binaries are copied. Default value is '/usr/bin'.
 #
 class redis::install (
-	$redis_version = "2.6.11"
+	$redis_version     = $redis::params::redis_version,
+	$redis_build_dir   = $redis::params::redis_build_dir,
+	$redis_install_dir = $redis::params::redis_install_dir,
 ) inherits redis {
 
-	if ! defined(Package['make']) { package { 'make': ensure => installed; } }
-	if ! defined(Package['gcc']) { package { 'gcc': ensure => installed; } }
-	if ! defined(Package['glibc-devel']) { package { 'glibc-devel': ensure => installed; } }
+	# install necessary packages for build.
+	case $::operatingsystem {
+		'Debian', 'Ubuntu': {
+			package { 'build-essential':
+				before => Anchor['redis::prepare_build'],
+				ensure => installed,
+			}
+		}
 
-	exec {
-		"Download and untar redis ${::redis::install::redis_version}":
-			command => "wget -O - http://redis.googlecode.com/files/redis-${::redis::install::redis_version}.tar.gz | tar xz",
-			creates => "/opt/redis-${::redis::install::redis_version}",
-			cwd => "/opt";
+		'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon': {
+			package { 'make':
+				before => Anchor['redis::prepare_build'],
+				ensure => installed,
+			}
+
+			package { 'gcc':
+				before => Anchor['redis::prepare_build'],
+				ensure => installed,
+			}
+
+			package { 'glibc-devel':
+				before => Anchor['redis::prepare_build'],
+				ensure => installed,
+			}
+		}
+	}
+
+	exec { "Make dir ${redis_build_dir}":
+		before => File["${redis_build_dir}"],
+
+		command => "mkdir -p ${redis_build_dir}",
+		creates => "${redis_build_dir}",
+		path    => "${::path}",
+		cwd     => '/',
+		user    => 'root',
+		group   => 'root',
+	}
+
+	file { "${redis_build_dir}":
+		ensure => directory,
+	}
+
+    if $redis_version == $::redis::params::redis_version {
+        $redis_download_url = "http://download.redis.io/redis-stable.tar.gz"
+    } else {
+        $redis_download_url = "http://download.redis.io/releases/redis-${redis_version}.tar.gz"
+    }
+
+	exec { "Download and untar redis ${redis_version}":
+		require => File["${redis_build_dir}"],
+		before  => Anchor['redis::prepare_build'],
+
+		command => "wget -O - ${redis_download_url} | tar xz",
+		creates => "${redis_build_dir}/redis-${::redis::install::redis_version}",
+		path    => "${::path}",
+		cwd     => "${redis_build_dir}",
+		user    => 'root',
+		group   => 'root',
+	}
+
+	anchor { 'redis::prepare_build':
+		before => Exec['redis::compile'],
 	}
 
 	# if this fails, then a 'make distclean' can help
-	exec {
-		"Compile redis":
-			command => 'make',
-			creates => "/opt/redis-${redis_version}/src/redis-server",
-			cwd => "/opt/redis-${::redis::install::redis_version}/",
-			require => [
-				Package['make'],
-				Package['gcc'],
-				Package['glibc-devel'],
-				Exec["Download and untar redis ${::redis::install::redis_version}"]
-			];
+	exec { 'redis::compile':
+		command => 'make',
+		creates => "${redis_build_dir}/redis-${redis_version}/src/redis-server",
+		cwd     => "${redis_build_dir}/redis-${::redis::install::redis_version}/",
+		path    => "${::path}",
+		user    => 'root',
+		group   => 'root',
 	}
 
-	file {
-		"/opt/redis":
-			ensure => link,
-			target => "/opt/redis-${::redis::install::redis_version}/src/",
-			require => Exec["Compile redis"];
+	file { "${redis_build_dir}/redis":
+		require => Exec["redis::compile"],
+
+		ensure => link,
+		target => "${redis_build_dir}/redis-${::redis::install::redis_version}/src/",
+	}
+
+	anchor { 'redis::install':
+		require => File["${redis_build_dir}/redis"],
+	}
+
+	$redis_binaries = [
+		"redis-benchmark",
+		"redis-check-aof",
+		"redis-check-dump",
+		"redis-cli",
+		"redis-sentinel",
+		"redis-server",
+	]
+	redis::install::binary { $redis_binaries:
+		require => Anchor['redis::install'],
+
+		redis_build_dir   => $redis_build_dir,
+		redis_install_dir => $redis_install_dir,
 	}
 }
 
@@ -75,8 +151,12 @@ class redis::install (
 #   Default: 0
 # [*redis_nr_dbs*]
 #   Number of databases provided by redis. Default: 1
+# [*redis_dbfilename*]
+#   Name of database dump file. Default: dump.rdb
 # [*redis_dir*]
-#   Path for persistent data. Path is <redis_dir>_<redis_name>
+#   Path for persistent data. Path is <redis_dir>/redis_<redis_name>/. Default: /var/lib
+# [*redis_log_dir*]
+#   Path for log. Full log path is <redis_log_dir>/redis_<redis_name>.log. Default: /var/log
 # [*redis_loglevel*]
 #   Loglevel of Redis. Default: notice
 # [*running*]
@@ -85,18 +165,27 @@ class redis::install (
 #   Configure if Redis is started at boot. Default: true
 #
 define redis::server (
-		$redis_name      = $name,
-		$redis_memory    = "100mb",
-		$redis_ip        = "127.0.0.1",
-		$redis_port      = 6379,
-		$redis_mempolicy = "allkeys-lru",
-		$redis_timeout   = 0,
-		$redis_nr_dbs    = 1,
-		$redis_dir       = "/var/lib/redis",
-		$redis_loglevel  = "notice",
-		$running         = "true",
-		$enabled         = "true"
+		$redis_name       = $name,
+		$redis_memory     = "100mb",
+		$redis_ip         = "127.0.0.1",
+		$redis_port       = 6379,
+		$redis_mempolicy  = "allkeys-lru",
+		$redis_timeout    = 0,
+		$redis_nr_dbs     = 1,
+		$redis_dbfilename = "dump.rdb",
+		$redis_dir        = "/var/lib",
+		$redis_log_dir    = "/var/log",
+		$redis_loglevel   = "notice",
+		$redis_appedfsync = "everysec",
+		$running          = "true",
+		$enabled          = "true",
 ) {
+	$redis_install_dir = $::redis::install::redis_install_dir
+	$redis_init_script = $::operatingsystem ? {
+		/(Debian|Ubuntu)/                               => "redis/etc/init.d/debian_redis-server.erb",
+		/(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon)/ => "redis/etc/init.d/redhat_redis-server.erb",
+		default                                         => UNDEF,
+	}
 
 	# redis conf file
 	file {
@@ -107,44 +196,57 @@ define redis::server (
 	}
 
 	# startup script
-	file {
-		"/etc/init.d/redis-server_${redis_name}":
-			ensure  => file,
-			mode    => 0755,
-			content => template("redis/etc/init.d/redis-server.erb"),
-			require => [
-				File["/etc/redis_${redis_name}.conf"],
-				File["${redis_dir}_${redis_name}"]
-			],
-			notify  => Service["redis-server_${redis_name}"];
+	file { "/etc/init.d/redis-server_${redis_name}":
+		ensure  => file,
+		mode    => 0755,
+		content => template("$redis_init_script"),
+		require => [
+			File["/etc/redis_${redis_name}.conf"],
+			File["${redis_dir}/redis_${redis_name}"]
+		],
+		notify  => Service["redis-server_${redis_name}"],
 	}
 
 	# path for persistent data
-	file {
-		"${redis_dir}_${redis_name}":
-			ensure => directory,
-			require => Class['redis::install'];
+	file { "${redis_dir}/redis_${redis_name}":
+		ensure => directory,
+		require => Class['redis::install'],
 	}
 
 	# install and configure logrotate
 	if ! defined(Package['logrotate']) { package { 'logrotate': ensure => installed; } }
 
-	file {
-		'/etc/logrotate.d/redis-server_${redis_name}':
-			content => template('redis/logrotate.conf.erb'),
-			require => [
-				Package['logrotate'],
-				File['/etc/redis_${redis_name}.conf'],
-			]
+	file { "/etc/logrotate.d/redis-server_${redis_name}":
+		content => template('redis/logrotate.conf.erb'),
+		require => [
+			Package['logrotate'],
+			File["/etc/redis_${redis_name}.conf"],
+		],
 	}
 
 	# manage redis service
-	service {
-		"redis-server_${redis_name}":
-			ensure     => $running,
-			enable     => $enabled,
-			hasstatus  => true,
-			hasrestart => true,
-			require    => File["/etc/init.d/redis-server_${redis_name}"];
+	service { "redis-server_${redis_name}":
+		ensure     => $running,
+		enable     => $enabled,
+		hasstatus  => true,
+		hasrestart => true,
+		require    => File["/etc/init.d/redis-server_${redis_name}"],
+	}
+}
+
+# Helper define for installing redis binary.
+define redis::install::binary (
+	$redis_binary = $name,
+	$redis_build_dir,
+	$redis_install_dir,
+) {
+	file { "${redis_install_dir}/${redis_binary}":
+		require => Anchor['redis::install'],
+
+		ensure => file,
+		source => "${redis_build_dir}/redis/${redis_binary}",
+		mode   => 0755,
+		owner  => 'root',
+		group  => 'root',
 	}
 }
