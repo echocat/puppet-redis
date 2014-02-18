@@ -5,17 +5,17 @@
 # chkconfig:   - 85 15
 # description:  Redis is a persistent key-value database
 # processname: redis-server
-# config:      /etc/redis_<%= redis_name %>.conf
-# pidfile:     /var/run/redis_<%= redis_name %>.pid
+# config:      /etc/redis_<%= @redis_name %>.conf
+# pidfile:     /var/run/redis_<%= @redis_name %>.pid
 
 # Source function library.
 . /lib/lsb/init-functions
 
-REDIS_EXEC="<%= redis_install_dir %>/redis-server"
-REDIS_NAME="redis-server_<%= redis_name %>"
-REDIS_PID="/var/run/redis_<%= redis_name %>.pid"
-REDIS_LOCKFILE="/var/lock/redis_<%= redis_name %>"
-REDIS_CONF_FILE="/etc/redis_<%= redis_name %>.conf"
+REDIS_EXEC="<%= @redis_install_dir %>/redis-server"
+REDIS_NAME="redis-server_<%= @redis_name %>"
+REDIS_PID="/var/run/redis_<%= @redis_name %>.pid"
+REDIS_LOCKFILE="/var/lock/redis_<%= @redis_name %>"
+REDIS_CONF_FILE="/etc/redis_<%= @redis_name %>.conf"
 
 [ -x "$REDIS_EXEC" ] || exit 5
 

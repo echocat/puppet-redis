@@ -2,7 +2,7 @@
 
 # Rotate redis with standard logrotate.
 
-<%= redis_log_dir %>/redis_<%= redis_name %>.log {
+<%= @redis_log_dir %>/redis_<%= @redis_name %>.log {
  weekly
  missingok
  copytruncate
