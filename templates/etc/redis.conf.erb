@@ -15,21 +15,21 @@
 # units are case insensitive so 1GB 1Gb 1gB are all the same.
 
 # By default Redis does not run as a daemon. Use 'yes' if you need it.
-# Note that Redis will write a pid file in /var/run/redis_<%= redis_name %>.pid when daemonized.
+# Note that Redis will write a pid file in /var/run/redis_<%= @redis_name %>.pid when daemonized.
 daemonize yes
 
 # When running daemonized, Redis writes a pid file in /var/run/redis.pid by
 # default. You can specify a custom pid file location here.
-pidfile /var/run/redis_<%= redis_name %>.pid
+pidfile /var/run/redis_<%= @redis_name %>.pid
 
 # Accept connections on the specified port, default is 6379.
 # If port 0 is specified Redis will not listen on a TCP socket.
-port <%= redis_port %>
+port <%= @redis_port %>
 
 # If you want you can bind a single interface, if the bind option is not
 # specified all the interfaces will listen for incoming connections.
 #
-bind <%= redis_ip %>
+bind <%= @redis_ip %>
 
 # Specify the path for the unix socket that will be used to listen for
 # incoming connections. There is no default, so Redis will not listen
@@ -46,12 +46,12 @@ timeout 0
 # verbose (many rarely useful info, but not a mess like the debug level)
 # notice (moderately verbose, what you want in production probably)
 # warning (only very important / critical messages are logged)
-loglevel <%= redis_loglevel %>
+loglevel <%= @redis_loglevel %>
 
 # Specify the log file name. Also 'stdout' can be used to force
 # Redis to log on the standard output. Note that if you use standard
 # output for logging but daemonize, logs will be sent to /dev/null
-logfile <%= redis_log_dir %>/redis_<%= redis_name %>.log
+logfile <%= @redis_log_dir %>/redis_<%= @redis_name %>.log
 
 # To enable logging to the system logger, just set 'syslog-enabled' to yes,
 # and optionally update the other syslog parameters to suit your needs.
@@ -66,7 +66,7 @@ logfile <%= redis_log_dir %>/redis_<%= redis_name %>.log
 # Set the number of databases. The default database is DB 0, you can select
 # a different one on a per-connection basis using SELECT <dbid> where
 # dbid is a number between 0 and 'databases'-1
-databases <%= redis_nr_dbs %>
+databases <%= @redis_nr_dbs %>
 
 ################################ SNAPSHOTTING  #################################
 #
@@ -95,7 +95,7 @@ databases <%= redis_nr_dbs %>
 rdbcompression yes
 
 # The filename where to dump the DB
-dbfilename <%= redis_dbfilename %>
+dbfilename <%= @redis_dbfilename %>
 
 # The working directory.
 #
@@ -105,7 +105,7 @@ dbfilename <%= redis_dbfilename %>
 # Also the Append Only File will be created inside this directory.
 #
 # Note that you must specify a directory here, not a file name.
-dir <%= redis_dir %>/redis_<%= redis_name %>
+dir <%= @redis_dir %>/redis_<%= @redis_name %>
 
 ################################# REPLICATION #################################
 
@@ -241,7 +241,7 @@ slave-serve-stale-data yes
 # errors for write operations, and this may even lead to DB inconsistency.
 #
 # maxmemory <bytes>
-maxmemory <%= redis_memory %>
+maxmemory <%= @redis_memory %>
 
 # MAXMEMORY POLICY: how Redis will select what to remove when maxmemory
 # is reached? You can select among five behavior:
@@ -265,7 +265,7 @@ maxmemory <%= redis_memory %>
 # The default is:
 #
 # maxmemory-policy volatile-lru
-maxmemory-policy <%= redis_mempolicy %>
+maxmemory-policy <%= @redis_mempolicy %>
 
 # LRU and minimal TTL algorithms are not precise algorithms but approximated
 # algorithms (in order to save memory), so you can select as well the sample
@@ -319,7 +319,7 @@ appendonly no
 # If unsure, use "everysec".
 
 # appendfsync always
-appendfsync <%= redis_appedfsync %>
+appendfsync <%= @redis_appedfsync %>
 # appendfsync no
 
 # When the AOF fsync policy is set to always or everysec, and a background
