@@ -1,0 +1,8 @@
+name 'dwerder-redis'
+version '1.0.0'
+source 'git clone https://github.com/echocat/puppet-redis.git'
+author 'Daniel Werdermann'
+license 'Mozilla Public License Version 2.0'
+summary 'Install and configure redis from source'
+description 'This module installs redis from source and configures multiple instances.'
+project_page 'https://github.com/echocat/puppet-redis'
