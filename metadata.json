@@ -1,0 +1,58 @@
+{
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat"
+    },
+    {
+      "operatingsystem": "CentOS"
+    },
+    {
+      "operatingsystem": "Scientific"
+    },
+    {
+      "operatingsystem": "Debian"
+    },
+    {
+      "operatingsystem": "Ubuntu"
+    }
+  ],
+  "requirements": [
+    {
+      "name": "pe",
+      "version_requirement": "3.x"
+    },
+    {
+      "name": "puppet",
+      "version_requirement": ">=2.7.20 <4.0.0"
+    }
+  ],
+  "name": "dwerder-redis",
+  "version": "1.0.0",
+  "source": "git clone https://github.com/echocat/puppet-redis.git",
+  "author": "Daniel Werdermann",
+  "license": "Mozilla Public License Version 2.0",
+  "summary": "Install and configure redis from source",
+  "description": "This module installs redis from source and configures multiple instances.",
+  "project_page": "https://github.com/echocat/puppet-redis",
+  "dependencies": [
+
+  ],
+  "types": [
+
+  ],
+  "checksums": {
+    "CHANGELOG.md": "e2e98d45fc31bcfee17a24b2bad2877c",
+    "LICENSE": "c6ae443b10f94fe4cc4bd3f5706f3798",
+    "Modulefile": "d79c5b6e834b8cd4029dd73f4397b7f4",
+    "README.md": "3e5226a02fec132c5822ce2a83d74bae",
+    "manifests/init.pp": "770c93553664fcf3b59fecfa50698a1a",
+    "manifests/install.pp": "e0b52f22fae8ea1d982115941ae7af54",
+    "manifests/installbinary.pp": "4260d22fe5c81fb93dc6bc4fa80ac551",
+    "manifests/params.pp": "112ba02292125f691a72ee1d6ce737f8",
+    "manifests/server.pp": "1850746b1b6a224023c5584165d8a462",
+    "templates/etc/init.d/debian_redis-server.erb": "803df94bb7a612cc61c01b31951a0fe1",
+    "templates/etc/init.d/redhat_redis-server.erb": "1568a703f5a1c6e242c80fcd623c57d6",
+    "templates/etc/redis.conf.erb": "28b1751bd0a39ea64bed4f5fdd527c63",
+    "templates/logrotate.conf.erb": "b970f7afb0f7434e8e0e678e2437196d"
+  }
+}
