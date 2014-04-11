@@ -87,7 +87,8 @@ define redis::server (
   }
 
   file { "/etc/logrotate.d/redis-server_${redis_name}":
-    content => template('redis/logrotate.conf.erb'),
+    ensure  => file,
+    content => template('redis/redis_logrotate.conf.erb'),
     require => [
       Package['logrotate'],
       File["/etc/redis_${redis_name}.conf"],
