@@ -6,10 +6,12 @@
 2. [Setup - The basics of getting started with redis](#setup)
     * [Beginning with redis - Installation](#beginning-with-redis)
     * [Run multiple instances on same host](#run-multiple-instances-on-same-host)
+    * [Setting up sentinel with two monitors](#setting-up-sentinel-with-two-monitors)
 3. [Usage - The class and defined types available for configuration](#usage)
     * [Classes and Defined Types](#classes-and-defined-types)
         * [Class: redis::install](#class-redisinstall)
         * [Defined Type: redis::server](#defined-type-redisserver)
+        * [Defined Type: redis::sentinel](#defined-type-redissentinel)
 4. [Limitations - OS compatibility, etc.](#limitations)
 5. [Contributing to the graphite module](#contributing)
 
@@ -50,7 +52,7 @@ Most of the time you will only need `redis_version`.
 As example run two redis instances on port 6379 and 6380.
 
 ```puppet
-node "redis.my.domain" {
+node 'redis.my.domain' {
 
   # install latest stable build.
   class { 'redis::install': }
@@ -81,6 +83,42 @@ node "redis.my.domain" {
       enabled         => true
   }
 }
+```
+
+###Setting up sentinel with two monitors
+
+You can create multiple sentinels on one node. But most of the time you will
+want to create a sentinel with one or more monitors configured.
+
+```puppet
+node 'sentinel.my.domain' {
+
+  # install latest stable build.
+  class { 'redis::install': redis_version => '2.8.8' }
+
+  redis::sentinel {'clusters':
+    monitors => {
+      'mymaster' => {
+        master_host             => '127.0.0.1',
+        master_port             => 6378,
+        quorum                  => 2,
+        down_after_milliseconds => 30000,
+        parallel-syncs          => 1,
+        failover_timeout        => 180000
+      },
+      'securetRedisCluster' => {
+        master_host             => '10.20.30.1',
+        master_port             => 6379,
+        quorum                  => 2,
+        down_after_milliseconds => 30000,
+        parallel-syncs          => 5,
+        failover_timeout        => 180000,
+        auth-pass => 'secret_Password',
+        notification-script => '/tmp/notify.sh',
+        client-reconfig-script => '/tmp/reconfig.sh'
+      }
+    }
+  }
 ```
 
 ##Usage
@@ -174,6 +212,57 @@ Configure if Redis should be running or not. Default: true (boolean)
 #####`enabled`
 
 Configure if Redis is started at boot. Default: true (boolean)
+
+####Defined Type: `redis::sentinel`
+
+Used to configure sentinel instances. You can setup multiple sentinel servers
+on the same node. And you can configure multiple monitors within a sentinel.
+See the setup examples.
+
+**Parameters within `redis::sentinel`
+
+#####`sentinel_name`
+
+Name of Redis instance. Default: call name of the function.
+
+#####`sentinel_port`
+
+Listen port of Redis. Default: 6379
+
+#####`sentinel_log_dir`
+
+Default is '/var/log' (string).
+Path for log. Full log path is `sentinel_log_dir`/sentinel_`sentinel_name`.log.
+
+#####`monitors`
+
+Default is
+```
+{
+  'mymaster' => {
+    master_host             => '127.0.0.1',
+    master_port             => 6379,
+    quorum                  => 2,
+    down_after_milliseconds => 30000,
+    parallel-syncs          => 1,
+    failover_timeout        => 180000,
+    ### optional
+    auth-pass => 'secret_Password',
+    notification-script => '/var/redis/notify.sh',
+    client-reconfig-script => '/var/redis/reconfig.sh'
+  },
+}
+```
+Hashmap of monitors.
+
+#####`running`
+
+Configure if Redis should be running or not. Default: true (boolean)
+
+#####`enabled`
+
+Configure if Redis is started at boot. Default: true (boolean)
+
 
 ##Limitations
 
