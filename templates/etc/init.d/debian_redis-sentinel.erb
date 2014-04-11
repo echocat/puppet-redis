@@ -1,0 +1,104 @@
+#!/bin/sh
+#
+# redis - this script starts and stops the redis-server daemon
+#
+# chkconfig:   - 85 15
+# description:  Redis Sentinel is a monitor for redis servers
+# processname: redis-sentinel
+# config:      /etc/redis-sentinel_<%= @sentinel_name %>.conf
+# pidfile:     /var/run/redis-sentinel_<%= @sentinel_name %>.pid
+
+# Source function library.
+. /lib/lsb/init-functions
+
+REDIS_EXEC="<%= @redis_install_dir %>/redis-sentinel"
+REDIS_NAME="redis-sentinel_<%= @sentinel_name %>"
+REDIS_PID="/var/run/redis-sentinel_<%= @sentinel_name %>.pid"
+REDIS_LOCKFILE="/var/lock/redis-sentinel_<%= @sentinel_name %>"
+REDIS_CONF_FILE="/etc/redis-sentinel_<%= @sentinel_name %>.conf"
+
+[ -x "$REDIS_EXEC" ] || exit 5
+
+start() {
+    local retval
+
+    [ -f "$REDIS_CONF_FILE" ] || exit 6
+
+    log_daemon_msg "Starting $REDIS_NAME"
+    start-stop-daemon --start --quiet --pidfile "$REDIS_PID" --retry 5 --exec "$REDIS_EXEC" --oknodo -- "$REDIS_CONF_FILE"
+
+    retval=$?
+    log_end_msg $retval
+    [ $retval -eq 0 ] && touch "$REDIS_LOCKFILE"
+
+    return $retval
+}
+
+stop() {
+    local retval
+
+    log_daemon_msg "Stopping $REDIS_NAME"
+    start-stop-daemon --stop --quiet --signal QUIT --pidfile "$REDIS_PID" --retry 5 --oknodo --exec "$REDIS_EXEC"
+
+    retval=$?
+    log_end_msg $retval
+    [ $retval -eq 0 ] && rm -f "$REDIS_LOCKFILE" "$REDIS_PID"
+
+    return $retval
+}
+
+restart() {
+    stop
+    sleep 1
+    start
+}
+
+reload() {
+    local retval
+
+    log_daemon_msg "Stopping $REDIS_NAME"
+    killproc -p"$pidfile" $redis -HUP
+    start-stop-daemon --stop --quiet --signal HUP --pidfile "$REDIS_PID" --oknodo --exec "$REDIS_EXEC"
+
+    retval=$?
+    log_end_msg $retval
+    return $retval
+}
+
+status() {
+    local retval
+    status_of_proc -p "$REDIS_PID" "$REDIS_EXEC" "$REDIS_NAME"
+    retval=$?
+    return $retval
+}
+
+status_q() {
+    status >/dev/null 2>&1
+}
+
+case "$1" in
+    start)
+        status_q && exit 0
+        start
+        ;;
+    stop)
+        status_q || exit 0
+        stop
+        ;;
+    restart|configtest|force-reload)
+        restart
+        ;;
+    reload)
+        rh_status_q || exit 7
+        reload
+        ;;
+    status)
+        status
+        ;;
+    condrestart|try-restart)
+        status_q || exit 0
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload}"
+        exit 2
+esac
