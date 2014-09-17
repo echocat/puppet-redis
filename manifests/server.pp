@@ -30,22 +30,42 @@
 #   Configure if Redis should be running or not. Default: true
 # [*enabled*]
 #   Configure if Redis is started at boot. Default: true
+# [*enabled*]
+#   Configure if Redis is started at boot. Default: true
+# [*slaveof*]
+#   Configure Redis Master on a slave
+# [*masterauth*]
+#   Configure Redis authentication
+# [*slave_server_stale_data*]
+#   Configure Redis slave to server stale data
+# [*slave_read_only*]
+#   Configure Redis slave to be in read-only mode
+# [*repl_timeout*]
+#   Configure Redis slave replication timeout
+# [*repl_ping_slave_period*]
+#   Configure Redis replication ping slave period
 #
 define redis::server (
-  $redis_name       = $name,
-  $redis_memory     = '100mb',
-  $redis_ip         = '127.0.0.1',
-  $redis_port       = 6379,
-  $redis_mempolicy  = 'allkeys-lru',
-  $redis_timeout    = 0,
-  $redis_nr_dbs     = 1,
-  $redis_dbfilename = 'dump.rdb',
-  $redis_dir        = '/var/lib',
-  $redis_log_dir    = '/var/log',
-  $redis_loglevel   = 'notice',
-  $redis_appedfsync = 'everysec',
-  $running          = true,
-  $enabled          = true
+  $redis_name              = $name,
+  $redis_memory            = '100mb',
+  $redis_ip                = '127.0.0.1',
+  $redis_port              = 6379,
+  $redis_mempolicy         = 'allkeys-lru',
+  $redis_timeout           = 0,
+  $redis_nr_dbs            = 1,
+  $redis_dbfilename        = 'dump.rdb',
+  $redis_dir               = '/var/lib',
+  $redis_log_dir           = '/var/log',
+  $redis_loglevel          = 'notice',
+  $redis_appedfsync        = 'everysec',
+  $running                 = true,
+  $enabled                 = true,
+  $slaveof                 = undef,
+  $masterauth              = undef,
+  $slave_server_stale_data = true,
+  $slave_read_only         = true,
+  $repl_timeout            = 60,
+  $repl_ping_slave_period  = 10,
 ) {
 
   $redis_install_dir = $::redis::install::redis_install_dir
