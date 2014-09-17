@@ -115,6 +115,7 @@ dir <%= @redis_dir %>/redis_<%= @redis_name %>
 # different interval, or to listen to another port, and so on.
 #
 # slaveof
+<% if @slaveof -%>slaveof <%= @slaveof %><% end -%>
 
 # If the master is password protected (using the "requirepass" configuration
 # directive below) it is possible to tell the slave to authenticate before
@@ -122,6 +123,7 @@ dir <%= @redis_dir %>/redis_<%= @redis_name %>
 # refuse the slave request.
 #
 # masterauth <password>
+<% if @masterauth -%>masterauth <%= @masterauth %><% end -%>
 
 # When a slave lost the connection with the master, or when the replication
 # is still in progress, the slave can act in two different ways:
@@ -134,7 +136,8 @@ dir <%= @redis_dir %>/redis_<%= @redis_name %>
 #    an error "SYNC with master in progress" to all the kind of commands
 #    but to INFO and SLAVEOF.
 #
-slave-serve-stale-data yes
+#slave-serve-stale-data yes
+slave-serve-stale-data <% if @slave_serve_stale_data -%>yes<% else -%>no<% end -%>
 
 # You can configure a slave instance to accept writes or not. Writing against
 # a slave instance may be useful to store some ephemeral data (because data
@@ -151,12 +154,14 @@ slave-serve-stale-data yes
 # security of read only slaves using 'rename-command' to shadow all the
 # administrative / dangerous commands.
 #slave-read-only yes
+slave-read-only <% if @slave_read_only -%>yes<% else -%>no<% end -%>
 
 # Slaves send PINGs to server in a predefined interval. It's possible to change
 # this interval with the repl_ping_slave_period option. The default value is 10
 # seconds.
 #
 # repl-ping-slave-period 10
+repl-ping-slave-period <%= @repl_ping_slave_period %>
 
 # The following option sets a timeout for both Bulk transfer I/O timeout and
 # master data or ping response timeout. The default value is 60 seconds.
@@ -166,6 +171,7 @@ slave-serve-stale-data yes
 # every time there is low traffic between the master and the slave.
 #
 # repl-timeout 60
+repl-timeout <%= @repl_timeout %>
 
 # The slave priority is an integer number published by Redis in the INFO output.
 # It is used by Redis Sentinel in order to select a slave to promote into a

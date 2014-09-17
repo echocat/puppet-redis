@@ -2,7 +2,7 @@
 
 ####Table of Contents
 
-1. [Overview - What is the graphite module?](#overview)
+1. [Overview - What is the redis module?](#overview)
 2. [Setup - The basics of getting started with redis](#setup)
     * [Beginning with redis - Installation](#beginning-with-redis)
     * [Run multiple instances on same host](#run-multiple-instances-on-same-host)
