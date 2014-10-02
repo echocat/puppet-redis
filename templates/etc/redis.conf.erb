@@ -301,12 +301,12 @@ maxmemory-policy <%= @redis_mempolicy %>
 
 #appendonly no
 
-appendonly <%= @redis_append_enable %>
+appendonly <% if @redis_append_enable -%> yes <% else -%> no <% end -%>
 
 # The name of the append only file (default: "appendonly.aof")
 # appendfilename appendonly.aof
 
-<% if @redis_append_file -%>appendfilename <%= @redis_append_file %><% end -%>
+<% if @redis_enable_append_file -%>appendfilename <%= @redis_append_file %><% end -%>
 
 # The fsync() call tells the Operating System to actually write data on disk
 # instead to wait for more data in the output buffer. Some OS will really flush
@@ -329,6 +329,7 @@ appendonly <%= @redis_append_enable %>
 # If unsure, use "everysec".
 
 # appendfsync always
+
 appendfsync <%= @redis_appedfsync %>
 # appendfsync no
 
@@ -372,7 +373,7 @@ no-appendfsync-on-rewrite <% if @appendfsync_on_rewrite -%> yes <% else -%>no<% 
 
 
 auto-aof-rewrite-percentage <%= @aof_rewrite_percentage %>
-auto-aof-rewrite-min-size <%= @aof_rewrite_minsize %>mb
+auto-aof-rewrite-min-size <%= @aof_rewrite_minsize %>
 
 ################################ LUA SCRIPTING  ###############################
 
