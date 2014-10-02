@@ -66,6 +66,11 @@ define redis::server (
   $slave_read_only         = true,
   $repl_timeout            = 60,
   $repl_ping_slave_period  = 10,
+  $appendfsync_on_rewrite  = undef,
+  $aof_rewrite_percentage  = 100,
+  $aof_rewrite_minsize     = 64,
+  $redis_appedfsync        = 'everysec',
+  $redis_append_enable     = 'no', 
 ) {
 
   $redis_install_dir = $::redis::install::redis_install_dir
