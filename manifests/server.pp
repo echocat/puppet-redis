@@ -69,7 +69,6 @@ define redis::server (
   $appendfsync_on_rewrite  = false,
   $aof_rewrite_percentage  = 100,
   $aof_rewrite_minsize     = 64,
-  $redis_appedfsync        = 'everysec',
   $redis_enabled_append_file = false,
   $redis_append_file       = undef,
   $redis_append_enable     = false, 
