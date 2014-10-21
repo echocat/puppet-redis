@@ -30,8 +30,6 @@
 #   Configure if Redis should be running or not. Default: true
 # [*enabled*]
 #   Configure if Redis is started at boot. Default: true
-# [*enabled*]
-#   Configure if Redis is started at boot. Default: true
 # [*slaveof*]
 #   Configure Redis Master on a slave
 # [*masterauth*]
@@ -44,6 +42,10 @@
 #   Configure Redis slave replication timeout
 # [*repl_ping_slave_period*]
 #   Configure Redis replication ping slave period
+# [*requirepass*]
+#   Configure Redis AUTH password
+# [*maxclients*]
+#   Configure Redis maximum clients
 #
 define redis::server (
   $redis_name              = $name,
@@ -66,6 +68,8 @@ define redis::server (
   $slave_read_only         = true,
   $repl_timeout            = 60,
   $repl_ping_slave_period  = 10,
+  $requirepass             = undef,
+  $maxclients              = undef,
 ) {
 
   $redis_install_dir = $::redis::install::redis_install_dir
