@@ -202,6 +202,7 @@ repl-timeout <%= @repl_timeout %>
 # use a very strong password otherwise it will be very easy to break.
 #
 # requirepass foobared
+<% if @requirepass -%>requirepass <%= @requirepass %><% end -%>
 
 # Command renaming.
 #
@@ -228,6 +229,7 @@ repl-timeout <%= @repl_timeout %>
 # an error 'max number of clients reached'.
 #
 # maxclients 10000
+<% if @maxclients -%>maxclients <%= @maxclients %><% end -%>
 
 # Don't use more memory than the specified amount of bytes.
 # When the memory limit is reached Redis will try to remove keys with an

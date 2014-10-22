@@ -42,9 +42,9 @@ Most of the time you will only need `redis_version`.
 
 ```puppet
   class { 'redis::install':
-  	redis_version     => '2.8.8',
-	redis_build_dir   => '/opt',
-	redis_install_dir => '/usr/bin'
+    redis_version     => '2.8.8',
+    redis_build_dir   => '/opt',
+    redis_install_dir => '/usr/bin'
   }
 ```
 
@@ -82,6 +82,46 @@ node 'redis.my.domain' {
       redis_loglevel  => 'info',
       running         => true,
       enabled         => true
+  }
+}
+```
+
+###Run highly available on different hosts
+
+As example of running a high availability cluster with authentication enabled.
+
+```puppet
+node 'redis-master.my.domain' {
+
+  # install latest stable build.
+  class { 'redis::install': }
+
+  redis::server {
+    'master':
+      redis_memory    => '1g',
+      redis_ip        => '0.0.0.0',
+      redis_port      => 6379,
+      running         => true,
+      enabled         => true,
+      requirepass     => 'some_really_long_random_password',
+  }
+}
+
+node 'redis-slave.my.domain' {
+
+  # install latest stable build.
+  class { 'redis::install': }
+
+  redis::server {
+    'slave':
+      redis_memory    => '1g',
+      redis_ip        => '0.0.0.0',
+      redis_port      => 6379,
+      running         => true,
+      enabled         => true,
+      requirepass     => 'some_really_long_random_password',
+      slaveof         => 'redis-master.my.domain 6379',
+      masterauth      => 'some_really_long_random_password',
   }
 }
 ```
@@ -126,7 +166,7 @@ node 'sentinel.my.domain' {
 
 ###Classes and Defined Types
 
-This module compiles and installs redis with the class `redis::install`. 
+This module compiles and installs redis with the class `redis::install`.
 The redis service(s) are configured with the defined type `redis::server`.
 
 ####Class: `redis::install`
@@ -138,7 +178,7 @@ redis services. This is done by defimed type redis::server.
 
 #####`redis_version`
 
-The redis version to be installed. 
+The redis version to be installed.
 By default, the latest stable build will be installed.
 
 #####`redis_build_dir`
@@ -150,7 +190,7 @@ directoy like '/opt/redis-2.8.8/'
 #####`redis_install_dir`
 
 Default is '/usr/bin' (string).
-The dir to which the newly built redis binaries are copied. 
+The dir to which the newly built redis binaries are copied.
 
 ####Defined Type: `redis::server`
 
@@ -200,7 +240,7 @@ Path for persistent data. Path is <redis_dir>/redis_<redis_name>/.
 #####`redis_log_dir`
 
 Default is '/var/log' (string).
-Path for log. Full log path is <redis_log_dir>/redis_<redis_name>.log. 
+Path for log. Full log path is <redis_log_dir>/redis_<redis_name>.log.
 
 #####`redis_loglevel`
 
@@ -213,6 +253,40 @@ Configure if Redis should be running or not. Default: true (boolean)
 #####`enabled`
 
 Configure if Redis is started at boot. Default: true (boolean)
+
+#####`requirepass`
+
+Supply a password if you want authentication with Redis. Default: undef (string)
+
+#####`maxclients`
+
+Max clients of Redis instance. Default: undef (number)
+
+##### High Availability Options
+
+#####`slaveof`
+
+Configure Redis Master on a slave. Default: undef (string)
+
+#####`masterauth`
+
+Password used when connecting to a master server which requires authentication. Default: undef (string)
+
+#####`slave_server_stale_data`
+
+Configure Redis slave to server stale data. Default: true (boolean)
+
+#####`slave_read_only`
+
+Configure Redis slave to be in read-only mode. Default: true (boolean)
+
+#####`repl_timeout`
+
+Configure Redis slave replication timeout in seconds. Default: 60 (number)
+
+#####`repl_ping_slave_period`
+
+Configure Redis replication ping slave period in seconds. Default: 10 (number)
 
 ####Defined Type: `redis::sentinel`
 
