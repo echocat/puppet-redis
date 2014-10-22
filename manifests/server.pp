@@ -33,7 +33,7 @@
 # [*slaveof*]
 #   Configure Redis Master on a slave
 # [*masterauth*]
-#   Configure Redis authentication
+#   Password used when connecting to a master server which requires authentication.
 # [*slave_server_stale_data*]
 #   Configure Redis slave to server stale data
 # [*slave_read_only*]
