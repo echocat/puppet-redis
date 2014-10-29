@@ -41,7 +41,6 @@ class redis::install (
           mirrorlist     => "http://mirrors.fedoraproject.org/metalink?repo=epel-${::operatingsystemmajrelease}&arch=\$basearch",
           enabled        => 1,
           gpgcheck       => 0,
-          failoevrmethod => priority,
         }
 
         yumrepo { 'remi':
