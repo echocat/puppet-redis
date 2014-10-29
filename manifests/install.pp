@@ -17,8 +17,14 @@
 class redis::install (
   $redis_version     = $::redis::params::redis_version,
   $redis_build_dir   = $::redis::params::redis_build_dir,
-  $redis_install_dir = $::redis::params::redis_install_dir
+  $redis_install_dir = $::redis::params::redis_install_dir,
+  $redis_package     = $::redis::params::redis_install_package
 ) inherits redis {
+  if ( $redis_package == true ) {
+    # TODO: add repo management for distros
+    package { 'redis' : ensure => present, }
+
+  } else {
 
   # install necessary packages for build.
   case $::operatingsystem {
@@ -120,4 +126,5 @@ class redis::install (
     redis_build_dir   => $redis_build_dir,
     redis_install_dir => $redis_install_dir,
   }
+ }
 }
