@@ -100,7 +100,9 @@ define redis::server (
   }
 
   # path for persistent data
-  file { "${redis_dir}/redis_${redis_name}":
+  # if we specify a directory that's not default we need to pass it as a hash
+  $directories = [ $redis_dir, "${redis_dir}/redis_${redis_name}" ]
+  file { $directories:
     ensure  => directory,
     require => Class['redis::install'],
   }
