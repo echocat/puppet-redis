@@ -22,7 +22,7 @@ class redis::install (
 ) inherits redis {
   if ( $redis_package == true ) {
     # TODO: add repo management for distros
-    package { 'redis' : ensure => present, }
+    package { 'redis' : ensure => "${redis_version}", }
 
   } else {
 
