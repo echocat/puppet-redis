@@ -47,6 +47,14 @@ Most of the time you will only need `redis_version`.
     redis_install_dir => '/usr/bin'
   }
 ```
+To install redis from package use the following parameters.
+You will need `redis_version` and `redis_package`
+```puppet
+  class { 'redis::install':
+    redis_version  => '2.8.17-2',
+    redis_package  => true,
+  }
+```
 
 ###Run multiple instances on same host
 
