@@ -64,7 +64,7 @@ define redis::server (
   $enabled                 = true,
   $slaveof                 = undef,
   $masterauth              = undef,
-  $slave_server_stale_data = true,
+  $slave_serve_stale_data  = true,
   $slave_read_only         = true,
   $repl_timeout            = 60,
   $repl_ping_slave_period  = 10,
