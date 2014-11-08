@@ -35,10 +35,10 @@
 # [*maxclients*]
 #   Configure Redis maximum clients
 # [*appendfsync_on_rewrite*]
-#   Configure the no-appendfsync-on-rewrite variable. 
+#   Configure the no-appendfsync-on-rewrite variable.
 #   Set to yes to enable the option. Defaults off. Default: false
 # [*aof_rewrite_percentage*]
-#   Configure the percentage size difference between the last aof filesize 
+#   Configure the percentage size difference between the last aof filesize
 #   and the newest to trigger a rewrite. Default: 100
 # [*aof_rewrite_minsize*]
 #   Configure the minimum size in mb of the aof file to trigger size comparisons for rewriting.
@@ -85,7 +85,7 @@ define redis::server (
   $redis_appendfsync       = 'everysec',
   $redis_enabled_append_file = false,
   $redis_append_file       = undef,
-  $redis_append_enable     = false, 
+  $redis_append_enable     = false,
   $slaveof                 = undef,
   $masterauth              = undef,
   $slave_serve_stale_data  = true,

@@ -8,7 +8,7 @@ define redis::installbinary (
   file { "${redis_install_dir}/${redis_binary}":
     ensure  => file,
     source  => "${redis_build_dir}/redis/${redis_binary}",
-    mode    => 0755,
+    mode    => '0755',
     owner   => 'root',
     group   => 'root',
     require => Anchor['redis::install']
