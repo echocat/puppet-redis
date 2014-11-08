@@ -18,7 +18,7 @@
 ##Overview
 
 This module installs and makes basic configs for multiple redis instances on
-the same node. It installs redis from source. (http://redis.io/)
+the same node. It installs redis via REPO or from source. (http://redis.io/)
 It also can configure the monitoring server Sentinel.
 
 ##Setup
