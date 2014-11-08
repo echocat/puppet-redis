@@ -30,6 +30,25 @@
 #   Configure if Redis should be running or not. Default: true
 # [*enabled*]
 #   Configure if Redis is started at boot. Default: true
+# [*requirepass*]
+#   Configure Redis AUTH password
+# [*maxclients*]
+#   Configure Redis maximum clients
+# [*appendfsync_on_rewrite*]
+#   Configure the no-appendfsync-on-rewrite variable. 
+#   Set to yes to enable the option. Defaults off. Default: false
+# [*aof_rewrite_percentage*]
+#   Configure the percentage size difference between the last aof filesize 
+#   and the newest to trigger a rewrite. Default: 100
+# [*aof_rewrite_minsize*]
+#   Configure the minimum size of the aof file to trigger size comparisons for rewriting.
+#   Default: 64mb
+# [*redis_enabled_append_file*]
+#   Enable custom append file. Default: false
+# [*redis_append_file*]
+#   Define the path for the append file. Optional. Default: undef
+# [*redis_append_enable*]
+#   Enable or disable the appendonly file option. Default: false
 # [*slaveof*]
 #   Configure Redis Master on a slave
 # [*masterauth*]
@@ -42,10 +61,6 @@
 #   Configure Redis slave replication timeout
 # [*repl_ping_slave_period*]
 #   Configure Redis replication ping slave period
-# [*requirepass*]
-#   Configure Redis AUTH password
-# [*maxclients*]
-#   Configure Redis maximum clients
 #
 define redis::server (
   $redis_name              = $name,
@@ -62,14 +77,20 @@ define redis::server (
   $redis_appedfsync        = 'everysec',
   $running                 = true,
   $enabled                 = true,
+  $requirepass             = undef,
+  $maxclients              = undef,
+  $appendfsync_on_rewrite  = false,
+  $aof_rewrite_percentage  = 100,
+  $aof_rewrite_minsize     = 64,
+  $redis_enabled_append_file = false,
+  $redis_append_file       = undef,
+  $redis_append_enable     = false, 
   $slaveof                 = undef,
   $masterauth              = undef,
   $slave_serve_stale_data  = true,
   $slave_read_only         = true,
   $repl_timeout            = 60,
   $repl_ping_slave_period  = 10,
-  $requirepass             = undef,
-  $maxclients              = undef,
 ) {
 
   $redis_install_dir = $::redis::install::redis_install_dir

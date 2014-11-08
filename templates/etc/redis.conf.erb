@@ -301,10 +301,14 @@ maxmemory-policy <%= @redis_mempolicy %>
 # IMPORTANT: Check the BGREWRITEAOF to check how to rewrite the append
 # log file in background when it gets too big.
 
-appendonly no
+#appendonly no
+
+appendonly <% if @redis_append_enable -%> yes <% else -%> no <% end -%>
 
 # The name of the append only file (default: "appendonly.aof")
 # appendfilename appendonly.aof
+
+<% if @redis_enable_append_file -%>appendfilename <%= @redis_append_file %><% end -%>
 
 # The fsync() call tells the Operating System to actually write data on disk
 # instead to wait for more data in the output buffer. Some OS will really flush
@@ -327,6 +331,7 @@ appendonly no
 # If unsure, use "everysec".
 
 # appendfsync always
+
 appendfsync <%= @redis_appedfsync %>
 # appendfsync no
 
@@ -348,7 +353,7 @@ appendfsync <%= @redis_appedfsync %>
 #
 # If you have latency problems turn this to "yes". Otherwise leave it as
 # "no" that is the safest pick from the point of view of durability.
-no-appendfsync-on-rewrite no
+no-appendfsync-on-rewrite <% if @appendfsync_on_rewrite -%> yes <% else -%>no<% end -%>
 
 # Automatic rewrite of the append only file.
 # Redis is able to automatically rewrite the log file implicitly calling
@@ -367,8 +372,10 @@ no-appendfsync-on-rewrite no
 # Specify a precentage of zero in order to disable the automatic AOF
 # rewrite feature.
 
-auto-aof-rewrite-percentage 100
-auto-aof-rewrite-min-size 64mb
+
+
+auto-aof-rewrite-percentage <%= @aof_rewrite_percentage %>
+auto-aof-rewrite-min-size <%= @aof_rewrite_minsize %>
 
 ################################ LUA SCRIPTING  ###############################
 
