@@ -41,8 +41,8 @@
 #   Configure the percentage size difference between the last aof filesize 
 #   and the newest to trigger a rewrite. Default: 100
 # [*aof_rewrite_minsize*]
-#   Configure the minimum size of the aof file to trigger size comparisons for rewriting.
-#   Default: 64mb
+#   Configure the minimum size in mb of the aof file to trigger size comparisons for rewriting.
+#   Default: 64 (integer)
 # [*redis_enabled_append_file*]
 #   Enable custom append file. Default: false
 # [*redis_append_file*]
@@ -82,6 +82,7 @@ define redis::server (
   $appendfsync_on_rewrite  = false,
   $aof_rewrite_percentage  = 100,
   $aof_rewrite_minsize     = 64,
+  $redis_appendfsync       = 'everysec',
   $redis_enabled_append_file = false,
   $redis_append_file       = undef,
   $redis_append_enable     = false, 

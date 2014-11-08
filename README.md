@@ -280,9 +280,9 @@ Configure the percentage size difference between the last aof filesize and the n
 
 #####`aof_rewrite_minsize`
 
-Configure the minimum size of the aof file to trigger size comparisons for rewriting. Default: 64mb
+Configure the minimum size in mb of the aof file to trigger size comparisons for rewriting. Default: 64
 
-#####`redis_appedfsync`
+#####`redis_appendfsync`
 
 Configure the value for when an fsync should happen. Values are either everysec, always, or no. Default: everysec
 

@@ -330,10 +330,7 @@ appendonly <% if @redis_append_enable -%> yes <% else -%> no <% end -%>
 #
 # If unsure, use "everysec".
 
-# appendfsync always
-
-appendfsync <%= @redis_appedfsync %>
-# appendfsync no
+appendfsync <%= @redis_appendfsync %>
 
 # When the AOF fsync policy is set to always or everysec, and a background
 # saving process (a background save or AOF log background rewriting) is
