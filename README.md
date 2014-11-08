@@ -270,6 +270,34 @@ Supply a password if you want authentication with Redis. Default: undef (string)
 
 Max clients of Redis instance. Default: undef (number)
 
+#####`appendfsync_on_rewrite`
+
+Configure the no-appendfsync-on-rewrite variable. Set to yes to enable the option. Defaults off. Default: false (boolean)
+
+#####`aof_rewrite_percentage`
+
+Configure the percentage size difference between the last aof filesize and the newest to trigger a rewrite. Default 100
+
+#####`aof_rewrite_minsize`
+
+Configure the minimum size of the aof file to trigger size comparisons for rewriting. Default: 64mb
+
+#####`redis_appedfsync`
+
+Configure the value for when an fsync should happen. Values are either everysec, always, or no. Default: everysec
+
+#####`redis_append_enable`
+
+Enable or disable the appendonly file option. Default: false (boolean)
+
+#####`redis_enabled_append_file`
+
+Enable custom append file. Default: false (boolean)
+
+#####`redis_append_file`
+
+Define the path for the append file. Optional. Default: undef 
+
 ##### High Availability Options
 
 #####`slaveof`
