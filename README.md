@@ -211,6 +211,8 @@ same node. See the setup examples.
 #####`redis_name`
 
 Name of Redis instance. Default: call name of the function.
+The name is used to create the init script(s), which follows the pattern
+`redis-server_${redis_name}`
 
 #####`redis_memory`
 
@@ -336,6 +338,8 @@ See the setup examples.
 #####`sentinel_name`
 
 Name of Redis instance. Default: call name of the function.
+The name is used to create the init script(s), which follows the pattern
+`redis-sentinel_${sentinel_name}`
 
 #####`sentinel_port`
 
