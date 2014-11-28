@@ -31,8 +31,8 @@
   "source": "git clone https://github.com/echocat/puppet-redis.git",
   "author": "Daniel Werdermann",
   "license": "Mozilla Public License Version 2.0",
-  "summary": "Install and configure redis and sentinel from source",
-  "description": "This module installs redis from source and can configure multiple instances of redis and sentinel.",
+  "summary": "Install and configure redis and sentinel from repo or source",
+  "description": "This module installs redis and can configure multiple instances of redis and sentinel.",
   "project_page": "https://github.com/echocat/puppet-redis",
   "dependencies": [
     {
@@ -44,16 +44,16 @@
 
   ],
   "checksums": {
-    "CHANGELOG.md": "ce3fb799c01f237b826f861c05b64076",
+    "CHANGELOG.md": "660640ed8ce1ddaa37e7748e6baa3039",
     "LICENSE": "c6ae443b10f94fe4cc4bd3f5706f3798",
-    "Modulefile": "632db6d1d4c2e70fabe0f88963b022e1",
-    "README.md": "f24c422f2a1a25b99b9180741bf61330",
+    "Modulefile": "a58c3a28aa78e7eca2556ef166c6815f",
+    "README.md": "2e73b4dd79b4748d405f95c547e228f8",
     "manifests/init.pp": "770c93553664fcf3b59fecfa50698a1a",
-    "manifests/install.pp": "8e52b58440f7be67b404ecd42e613c46",
-    "manifests/installbinary.pp": "4260d22fe5c81fb93dc6bc4fa80ac551",
+    "manifests/install.pp": "2a122c09bed2b55e10627bc914ad2602",
+    "manifests/installbinary.pp": "dc01e047cff41f3c7783e125a496fad6",
     "manifests/params.pp": "cbf6ff542b899350e51554f99e259c7e",
     "manifests/sentinel.pp": "400bf50252a2cb72c289ef556c0f8df1",
-    "manifests/server.pp": "1f6417ffe2578a266e0f3b4c54593490",
+    "manifests/server.pp": "a1c538b5b3600096dfe3ca364c90fc32",
     "templates/etc/init.d/debian_redis-sentinel.erb": "b411279ba0f82764fb0e6e12f1e8e79c",
     "templates/etc/init.d/debian_redis-server.erb": "803df94bb7a612cc61c01b31951a0fe1",
     "templates/etc/init.d/redhat_redis-sentinel.erb": "7e3053acf9f1cb50f1d217333d30609a",
