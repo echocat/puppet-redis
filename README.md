@@ -12,8 +12,9 @@
         * [Class: redis::install](#class-redisinstall)
         * [Defined Type: redis::server](#defined-type-redisserver)
         * [Defined Type: redis::sentinel](#defined-type-redissentinel)
-4. [Limitations - OS compatibility, etc.](#limitations)
-5. [Contributing to the graphite module](#contributing)
+4. [Requirements](#requirements)
+5. [Limitations - OS compatibility, etc.](#limitations)
+6. [Contributing to the graphite module](#contributing)
 
 ##Overview
 
@@ -374,6 +375,16 @@ Configure if Redis should be running or not. Default: true (boolean)
 
 Configure if Redis is started at boot. Default: true (boolean)
 
+##Requirements
+
+###Modules needed:
+
+stdlib by puppetlabs
+
+###Software versions needed:
+
+facter > 1.6.2
+puppet > 2.6.2
 
 ##Limitations
 

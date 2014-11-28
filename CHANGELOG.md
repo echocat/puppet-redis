@@ -1,3 +1,10 @@
+## 2014-11-28 - 1.2.1 (Bugfix release)
+
+#### Bugfixes:
+
+- add missing dependency for puppetlabs/stdlib
+- some puppet linting
+
 ## 2014-11-08 - 1.2.0 (Feature release)
 
 #### Features:
