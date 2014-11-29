@@ -88,7 +88,7 @@ node 'redis.my.domain' {
       redis_mempolicy => 'allkeys-lru',
       redis_timeout   => 0,
       redis_nr_dbs    => 2,
-      redis_loglevel  => 'info',
+      redis_loglevel  => 'warning',
       running         => true,
       enabled         => true
   }
