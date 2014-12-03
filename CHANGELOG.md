@@ -1,3 +1,11 @@
+## 2014-12-03 - 1.2.2 (Bugfix release)
+
+#### Bugfixes:
+
+- use ensure_packages to avoid redeclares
+- update stdlib version requirement, because of ensure_packages
+- small fix in README examples
+
 ## 2014-11-28 - 1.2.1 (Bugfix release)
 
 #### Bugfixes:
