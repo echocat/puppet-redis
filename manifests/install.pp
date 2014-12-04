@@ -21,9 +21,17 @@ class redis::install (
   $redis_package     = $::redis::params::redis_install_package
 ) inherits redis {
   if ( $redis_package == true ) {
-    # TODO: add repo management for distros
-    package { 'redis' : ensure => $redis_version, }
-
+    case $::operatingsystem {
+      'Debian', 'Ubuntu': {
+        package { 'redis-server' : ensure => $redis_version, }
+      }
+      'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon': {
+        package { 'redis' : ensure => $redis_version, }
+      }
+      default: {
+        fail('The module does not support this OS.')
+      }
+    }
   } else {
 
     # install necessary packages for build.
