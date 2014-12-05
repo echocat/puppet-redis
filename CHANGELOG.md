@@ -1,3 +1,9 @@
+## 2014-12-05 - 1.2.3 (Bugfix release)
+
+#### Bugfixes:
+
+- Debian: fix package name to redis-server
+
 ## 2014-12-03 - 1.2.2 (Bugfix release)
 
 #### Bugfixes:

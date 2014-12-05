@@ -49,10 +49,10 @@ Most of the time you will only need `redis_version`.
   }
 ```
 To install redis from package use the following parameters.
-You will need `redis_version` and `redis_package`
+You will need `redis_version` and `redis_package`. 
 ```puppet
   class { 'redis::install':
-    redis_version  => '2.8.17-2',
+    redis_version  => '2.8.18-1.el6.remi',
     redis_package  => true,
   }
 ```

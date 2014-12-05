@@ -1,5 +1,5 @@
 name 'dwerder-redis'
-version '1.2.2'
+version '1.2.3'
 source 'git clone https://github.com/echocat/puppet-redis.git'
 author 'Daniel Werdermann'
 license 'Mozilla Public License Version 2.0'

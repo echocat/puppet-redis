@@ -25,7 +25,7 @@ class redis::install (
       'Debian', 'Ubuntu': {
         package { 'redis-server' : ensure => $redis_version, }
       }
-      'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon': {
+      'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon', 'Scientific': {
         package { 'redis' : ensure => $redis_version, }
       }
       default: {
@@ -39,7 +39,7 @@ class redis::install (
       'Debian', 'Ubuntu': {
         ensure_packages('build-essential', {'before' => Anchor['redis::prepare_build']} )
       }
-      'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon': {
+      'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon', 'Scientific': {
         ensure_packages(['make', 'gcc', 'glibc-devel'], {'before' => Anchor['redis::prepare_build']})
       }
       default: {
