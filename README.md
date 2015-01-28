@@ -14,7 +14,7 @@
         * [Defined Type: redis::sentinel](#defined-type-redissentinel)
 4. [Requirements](#requirements)
 5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Contributing to the graphite module](#contributing)
+6. [Contributing to the redis module](#contributing)
 
 ##Overview
 
