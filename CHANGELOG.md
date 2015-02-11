@@ -5,6 +5,7 @@
 - remove Modulefile
 - add basic rspec tests
 - fix license
+- add support for non default redis directory creation
 
 ## 2014-12-05 - 1.2.3 (Bugfix release)
 
