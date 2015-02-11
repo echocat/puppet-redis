@@ -1,3 +1,11 @@
+## 2015-02-11 - 1.2.4 (Bugfix release)
+
+#### Bugfixes:
+
+- remove Modulefile
+- add basic rspec tests
+- fix license
+
 ## 2014-12-05 - 1.2.3 (Bugfix release)
 
 #### Bugfixes:
