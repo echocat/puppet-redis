@@ -61,6 +61,8 @@
 #   Configure Redis slave replication timeout
 # [*repl_ping_slave_period*]
 #   Configure Redis replication ping slave period
+# [*save*]
+#   Configure Redis save snapshotting. Example: [[900, 1], [300, 10]]. Default: []
 #
 define redis::server (
   $redis_name              = $name,
@@ -92,6 +94,7 @@ define redis::server (
   $slave_read_only         = true,
   $repl_timeout            = 60,
   $repl_ping_slave_period  = 10,
+  $save                    = [],
 ) {
 
   $redis_install_dir = $::redis::install::redis_install_dir
@@ -131,7 +134,7 @@ define redis::server (
       require => Class['redis::install'],
     }
   }
-  
+
   file { "${redis_dir}/redis_${redis_name}":
     ensure  => directory,
     require => Class['redis::install'],
