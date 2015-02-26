@@ -1,3 +1,13 @@
+## 2015-02-26 - 1.3.0 (Feature/Bugfix release)
+
+#### Features:
+
+- add ability to set save db values
+
+#### Bugfixes:
+
+- fix duplication directory error, if multiple redis are on the same node
+
 ## 2015-02-11 - 1.2.4 (Bugfix release)
 
 #### Bugfixes:
