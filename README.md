@@ -299,7 +299,11 @@ Enable custom append file. Default: false (boolean)
 
 #####`redis_append_file`
 
-Define the path for the append file. Optional. Default: undef 
+Define the path for the append file. Optional. Default: undef
+
+#####`save`
+
+Configure Redis save snapshotting. Example: [[900, 1], [300, 10]]. Default: []
 
 ##### High Availability Options
 
