@@ -103,6 +103,7 @@ define redis::server (
     /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon)/ => 'redis/etc/init.d/redhat_redis-server.erb',
     default                                         => UNDEF,
   }
+  $redis_2_6_or_greater = versioncmp($::redis::install::redis_version,'2.6') >= 0
 
   # redis conf file
   file {

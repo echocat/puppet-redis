@@ -154,7 +154,9 @@ slave-serve-stale-data <% if @slave_serve_stale_data -%>yes<% else -%>no<% end -
 # security of read only slaves using 'rename-command' to shadow all the
 # administrative / dangerous commands.
 #slave-read-only yes
+<% if @redis_2_6_or_greater -%>
 slave-read-only <% if @slave_read_only -%>yes<% else -%>no<% end -%>
+<% end -%>
 
 # Slaves send PINGs to server in a predefined interval. It's possible to change
 # this interval with the repl_ping_slave_period option. The default value is 10
@@ -421,8 +423,13 @@ slowlog-max-len 1024
 # Hashes are encoded using a memory efficient data structure when they have a
 # small number of entries, and the biggest entry does not exceed a given
 # threshold. These thresholds can be configured using the following directives.
+<% if @redis_2_6_or_greater -%>
 hash-max-ziplist-entries 512
 hash-max-ziplist-value 64
+<% else -%>
+hash-max-zipmap-entries 512
+hash-max-zipmap-value 64
+<% end -%>
 
 # Similarly to hashes, small lists are also encoded in a special way in order
 # to save a lot of space. The special representation is only used when
