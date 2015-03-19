@@ -25,8 +25,15 @@ class redis::install (
       'Debian', 'Ubuntu': {
         package { 'redis-server' : ensure => $redis_version, }
       }
-      'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon', 'Scientific': {
+      'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon', 'Scientific', 'SLES': {
         package { 'redis' : ensure => $redis_version, }
+        # The SLES DatabaseServer repository installs a conflicting logrotation configuration
+        if $::operatingsystem == 'SLES' {
+          file { '/etc/logrotate.d/redis':
+            ensure    => 'absent',
+            subscribe => Package['redis'],
+          }
+        }
       }
       default: {
         fail('The module does not support this OS.')

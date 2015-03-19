@@ -75,6 +75,7 @@ define redis::server (
   $redis_dbfilename        = 'dump.rdb',
   $redis_dir               = '/var/lib',
   $redis_log_dir           = '/var/log',
+  $redis_pid_dir           = '/var/run',
   $redis_loglevel          = 'notice',
   $redis_appedfsync        = 'everysec',
   $running                 = true,
@@ -101,6 +102,7 @@ define redis::server (
   $redis_init_script = $::operatingsystem ? {
     /(Debian|Ubuntu)/                               => 'redis/etc/init.d/debian_redis-server.erb',
     /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon)/ => 'redis/etc/init.d/redhat_redis-server.erb',
+    /(SLES)/                                        => 'redis/etc/init.d/sles_redis-server.erb',
     default                                         => UNDEF,
   }
   $redis_2_6_or_greater = versioncmp($::redis::install::redis_version,'2.6') >= 0

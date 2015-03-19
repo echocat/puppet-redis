@@ -248,6 +248,11 @@ Name of database dump file. Default: dump.rdb
 Default is '/var/lib' (string)
 Path for persistent data. Path is <redis_dir>/redis_<redis_name>/.
 
+#####`redis_pid_dir`
+
+Default is '/var/run' (string).
+Path for pidfile. Full pidfile path is <redis_pid_dir>/redis_<redis_name>.pid.
+
 #####`redis_log_dir`
 
 Default is '/var/log' (string).
@@ -401,6 +406,11 @@ This module is tested on CentOS 6.5 and Debian 7 (Wheezy) and should also run wi
 * RHEL/CentOS/Scientific 6+
 * Debian 6+
 * Ubunutu 10.04 and newer
+* SLES 11 SP3
+
+Limitation on SLES:
+ * Installation from source is not supported
+ * Redis sentinel configuration/management is not supported
 
 ##Contributing
 

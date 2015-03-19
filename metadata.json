@@ -10,6 +10,9 @@
       "operatingsystem": "Scientific"
     },
     {
+      "operatingsystem": "SLES"
+    },
+    {
       "operatingsystem": "Debian"
     },
     {

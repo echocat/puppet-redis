@@ -15,12 +15,12 @@
 # units are case insensitive so 1GB 1Gb 1gB are all the same.
 
 # By default Redis does not run as a daemon. Use 'yes' if you need it.
-# Note that Redis will write a pid file in /var/run/redis_<%= @redis_name %>.pid when daemonized.
+# Note that Redis will write a pid file in <%= @redis_pid_dir %>/redis_<%= @redis_name %>.pid when daemonized.
 daemonize yes
 
-# When running daemonized, Redis writes a pid file in /var/run/redis.pid by
+# When running daemonized, Redis writes a pid file in <%= @redis_pid_dir %>/redis.pid by
 # default. You can specify a custom pid file location here.
-pidfile /var/run/redis_<%= @redis_name %>.pid
+pidfile <%= @redis_pid_dir %>/redis_<%= @redis_name %>.pid
 
 # Accept connections on the specified port, default is 6379.
 # If port 0 is specified Redis will not listen on a TCP socket.
