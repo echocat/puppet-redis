@@ -7,7 +7,7 @@
 # processname: redis-server
 # config:      /etc/redis_<%= @redis_name %>.conf
 # config:      /etc/sysconfig/redis
-# pidfile:     /var/run/redis_<%= @redis_name %>.pid
+# pidfile:     <%= @redis_pid_dir %>/redis_<%= @redis_name %>.pid
 
 # Source function library.
 . /etc/rc.d/init.d/functions
@@ -20,7 +20,7 @@
 
 redis="<%= @redis_install_dir %>/redis-server"
 prog="redis_<%= @redis_name %>"
-pidfile="/var/run/redis_<%= @redis_name %>.pid"
+pidfile="<%= @redis_pid_dir %>/redis_<%= @redis_name %>.pid"
 
 REDIS_CONF_FILE="/etc/redis_<%= @redis_name %>.conf"
 
