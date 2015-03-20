@@ -409,8 +409,8 @@ This module is tested on CentOS 6.5 and Debian 7 (Wheezy) and should also run wi
 * SLES 11 SP3
 
 Limitation on SLES:
- * Installation from source is not supported
- * Redis sentinel configuration/management is not supported
+ * Installation from source is not tested
+ * Redis sentinel configuration/management is not tested
 
 ##Contributing
 
