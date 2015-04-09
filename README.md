@@ -22,6 +22,9 @@ This module installs and makes basic configs for multiple redis instances on
 the same node. It installs redis via REPO or from source. (http://redis.io/)
 It also can configure the monitoring server Sentinel.
 
+Github Master: [![Build Status](https://secure.travis-ci.org/echocat/puppet-redis.png?branch=master)](https://travis-ci.org/echocat/puppet-redis)
+
+
 ##Setup
 
 **What redis affects:**
