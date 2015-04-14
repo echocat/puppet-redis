@@ -1,3 +1,10 @@
+## 2015-04-14 - 1.4.0 (Feature release)
+
+#### Features:
+
+- add support for SLES
+- better support for old redis 2.4.x
+
 ## 2015-02-26 - 1.3.0 (Feature/Bugfix release)
 
 #### Features:
