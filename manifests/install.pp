@@ -18,7 +18,8 @@ class redis::install (
   $redis_version     = $::redis::params::redis_version,
   $redis_build_dir   = $::redis::params::redis_build_dir,
   $redis_install_dir = $::redis::params::redis_install_dir,
-  $redis_package     = $::redis::params::redis_install_package
+  $redis_package     = $::redis::params::redis_install_package,
+  $download_tool     = $::redis::params::download_tool
 ) inherits redis {
   if ( $redis_package == true ) {
     case $::operatingsystem {
@@ -77,7 +78,7 @@ class redis::install (
     exec { "Download and untar redis ${redis_version}":
       require => File[$redis_build_dir],
       before  => Anchor['redis::prepare_build'],
-      command => "wget -O - ${redis_download_url} | tar xz",
+      command => "${download_tool} ${redis_download_url} | tar xz",
       creates => "${redis_build_dir}/redis-${::redis::install::redis_version}",
       path    => $::path,
       cwd     => $redis_build_dir,
