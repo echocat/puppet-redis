@@ -1,15 +1,21 @@
+## 2015-04-21 - 1.5.0 (Feature release)
+
+#### Features:
+
+- Issue #20 use curl instead of wget for download
+
 ## 2015-04-14 - 1.4.0 (Feature release)
 
 #### Features:
 
-- add support for SLES
-- better support for old redis 2.4.x
+- Issue #18 add support for SLES
+- Issue #17 better support for old redis 2.4.x
 
 ## 2015-02-26 - 1.3.0 (Feature/Bugfix release)
 
 #### Features:
 
-- add ability to set save db values
+- Issue #16 add ability to set save db values
 
 #### Bugfixes:
 

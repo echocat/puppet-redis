@@ -26,11 +26,11 @@
     },
     {
       "name": "puppet",
-      "version_requirement": ">=2.7.20 <4.0.0"
+      "version_requirement": ">=2.7.20 <5.0.0"
     }
   ],
   "name": "dwerder-redis",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "source": "git clone https://github.com/echocat/puppet-redis.git",
   "author": "Daniel Werdermann",
   "license": "MPL-2.0",
