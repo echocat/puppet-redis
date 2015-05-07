@@ -362,6 +362,12 @@ Listen port of Redis. Default: 6379
 Default is '/var/log' (string).
 Path for log. Full log path is `sentinel_log_dir`/sentinel_`sentinel_name`.log.
 
+#####`sentinel_pid_dir`
+
+Default is '/var/run' (string).
+Path for pid file. Full pid file path is `sentinel_pid_dir`/sentinel_`sentinel_name`.pid.
+
+
 #####`monitors`
 
 Default is
@@ -390,6 +396,15 @@ Configure if Redis should be running or not. Default: true (boolean)
 #####`enabled`
 
 Configure if Redis is started at boot. Default: true (boolean)
+
+#####`force_rewrite`
+
+Boolean. Default: `false`
+
+Configure if the sentinels config is overwritten by puppet followed by a
+sentinel restart. Since sentinels automatically rewrite their config since
+version 2.8 setting this to `true` will trigger a sentinel restart on each puppet
+run with redis 2.8 or later.
 
 ##Requirements
 
