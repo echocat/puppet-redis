@@ -9,6 +9,8 @@
 #   Listen port of Redis. Default: 26379
 # [*sentinel_log_dir*]
 #   Path for log. Full log path is <sentinel_log_dir>/redis-sentinel_<redis_name>.log. Default: /var/log
+# [*sentinel_pid_dir*]
+#   Path for pid file. Full pid path is <sentinel_pid_dir>/redis-sentinel_<redis_name>.pid. Default: /var/run
 # [*monitors*]
 #   Default is
 # {

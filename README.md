@@ -362,6 +362,12 @@ Listen port of Redis. Default: 6379
 Default is '/var/log' (string).
 Path for log. Full log path is `sentinel_log_dir`/sentinel_`sentinel_name`.log.
 
+#####`sentinel_pid_dir`
+
+Default is '/var/run' (string).
+Path for pid file. Full pid file path is `sentinel_pid_dir`/sentinel_`sentinel_name`.pid.
+
+
 #####`monitors`
 
 Default is
