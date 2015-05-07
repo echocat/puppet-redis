@@ -32,6 +32,14 @@
 #   Configure if Sentinel should be running or not. Default: true
 # [*enabled*]
 #   Configure if Sentinel is started at boot. Default: true
+# [*force_rewrite*]
+#
+#   Boolean. Default: `false`
+#
+#   Configure if the sentinels config is overwritten by puppet followed by a
+#   sentinel restart. Since sentinels automatically rewrite their config since
+#   version 2.8 setting this to `true` will trigger a sentinel restart on each puppet
+#   run with redis 2.8 or later.
 #
 define redis::sentinel (
   $ensure           = 'present',
@@ -54,9 +62,13 @@ define redis::sentinel (
     }
   },
   $running          = true,
-  $enabled          = true
+  $enabled          = true,
+  $force_rewrite    = false,
 ) {
 
+  # validate parameters
+  validate_bool($force_rewrite)
+  
   $redis_install_dir = $::redis::install::redis_install_dir
   $sentinel_init_script = $::operatingsystem ? {
     /(Debian|Ubuntu)/                               => 'redis/etc/init.d/debian_redis-sentinel.erb',
@@ -69,7 +81,9 @@ define redis::sentinel (
     "/etc/redis-sentinel_${sentinel_name}.conf":
       ensure  => file,
       content => template('redis/etc/sentinel.conf.erb'),
+      replace => $force_rewrite,
       require => Class['redis::install'];
+      
   }->
 
   # startup script
