@@ -36,6 +36,7 @@ define redis::sentinel (
   $sentinel_name    = $name,
   $sentinel_port    = 26379,
   $sentinel_log_dir = '/var/log',
+  $sentinel_pid_dir = '/var/run',
   $monitors         = {
     'mymaster' => {
       master_host             => '127.0.0.1',

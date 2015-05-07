@@ -6,14 +6,14 @@
 # description:  Redis Sentinel is a monitor for redis servers
 # processname: redis-sentinel
 # config:      /etc/redis-sentinel_<%= @sentinel_name %>.conf
-# pidfile:     <%= @redis_pid_dir %>/redis-sentinel_<%= @sentinel_name %>.pid
+# pidfile:     <%= @sentinel_pid_dir %>/redis-sentinel_<%= @sentinel_name %>.pid
 
 # Source function library.
 . /lib/lsb/init-functions
 
 REDIS_EXEC="<%= @redis_install_dir %>/redis-sentinel"
 REDIS_NAME="redis-sentinel_<%= @sentinel_name %>"
-REDIS_PID="<%= @redis_pid_dir %>/redis-sentinel_<%= @sentinel_name %>.pid"
+REDIS_PID="<%= @sentinel_pid_dir %>/redis-sentinel_<%= @sentinel_name %>.pid"
 REDIS_LOCKFILE="/var/lock/redis-sentinel_<%= @sentinel_name %>"
 REDIS_CONF_FILE="/etc/redis-sentinel_<%= @sentinel_name %>.conf"
 
