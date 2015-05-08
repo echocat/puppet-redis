@@ -397,6 +397,15 @@ Configure if Redis should be running or not. Default: true (boolean)
 
 Configure if Redis is started at boot. Default: true (boolean)
 
+#####`force_rewrite`
+
+Boolean. Default: `false`
+
+Configure if the sentinels config is overwritten by puppet followed by a
+sentinel restart. Since sentinels automatically rewrite their config since
+version 2.8 setting this to `true` will trigger a sentinel restart on each puppet
+run with redis 2.8 or later.
+
 ##Requirements
 
 ###Modules needed:
