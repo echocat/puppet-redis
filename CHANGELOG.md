@@ -1,3 +1,15 @@
+## 2015-05-11 - 1.6.0 (Feature/Bugfix release)
+
+#### Features:
+
+- Issue #22 Sentinel: add `force_rewrite` parameter for sentinel.conf
+- Issue #22 Sentinel: add parameter `sentinel_pid_dir`
+
+#### Bugfixes:
+
+- Fixes #22 fix sentinel pid and log locations in init script
+- Fixes #23 RedHat: fix stop in initscript (remove signal -QUIT)
+
 ## 2015-04-21 - 1.5.0 (Feature release)
 
 #### Features:
