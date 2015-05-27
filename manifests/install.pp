@@ -14,17 +14,43 @@
 # [*redis_install_dir*]
 #   The dir to which the newly built redis binaries are copied. Default value is '/usr/bin'.
 #
+# [*manage_repo*]
+#   Configure if this module should maintain repos for the redis package. Default: false
+#   Requires redis_package set to true.
+#   Currently only supports Ubuntu PPA (ppa:chris-lea/redis-server).
+#
 class redis::install (
   $redis_version     = $::redis::params::redis_version,
   $redis_build_dir   = $::redis::params::redis_build_dir,
   $redis_install_dir = $::redis::params::redis_install_dir,
   $redis_package     = $::redis::params::redis_install_package,
+  $manage_repo       = $::redis::params::manage_repo,
   $download_tool     = $::redis::params::download_tool
 ) inherits redis {
-  if ( $redis_package == true ) {
+
+  validate_bool($manage_repo)
+  validate_bool($redis_package)
+
+  if ( $manage_repo == true and $redis_package == false ) {
+    fail('manage_repo requires redis_package.')
+  }
+
+  if $redis_package {
     case $::operatingsystem {
-      'Debian', 'Ubuntu': {
-        package { 'redis-server' : ensure => $redis_version, }
+      'Ubuntu': {
+        if $manage_repo {
+          class { '::redis::repo': } ->
+          Anchor['redis::repo::begin']
+
+          anchor { 'redis::repo::begin': } ->
+            package { 'redis-server' : ensure => $redis_version, }
+          anchor { 'redis::repo::end': }
+        } else {
+          package { 'redis-server' : ensure => $redis_version, }
+        }
+      }
+      'Debian': {
+          package { 'redis-server' : ensure => $redis_version, }
       }
       'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon', 'Scientific', 'SLES': {
         package { 'redis' : ensure => $redis_version, }
