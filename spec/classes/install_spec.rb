@@ -27,4 +27,31 @@ describe 'redis::install' do
     end
   end
 
+  describe 'when manage_repo is enabled on Ubuntu trusty without redis_package' do
+    let(:facts) {{
+      :osfamily        => 'Debian',
+      :operatingsystem => 'Ubuntu',
+      :lsbdistid       => 'Ubuntu',
+      :lsbdistcodename => 'trusty',
+    }}
+    let(:params) { { :manage_repo => true, } }
+    it do
+      expect {
+        should_not contain_class('redis::repo::ubuntu')
+      }.to raise_error(Puppet::Error, /manage_repo requires redis_package/ )
+    end
+  end
+
+  describe 'when manage_repo and redis_package is enabled on Ubuntu trusty' do
+    let(:facts) {{
+      :osfamily        => 'Debian',
+      :operatingsystem => 'Ubuntu',
+      :lsbdistid       => 'Ubuntu',
+      :lsbdistcodename => 'trusty',
+    }}
+    let(:params) { { :manage_repo => true, :redis_package => true } }
+    it {
+      should contain_class('redis::repo::ubuntu')
+    }
+  end
 end
