@@ -32,7 +32,7 @@ start() {
     [ -x $redis ] || exit 5
     [ -f $REDIS_CONF_FILE ] || exit 6
     echo -n $"Starting $prog: "
-    daemon <% if @user -%>--user=<%= @user %><% if @group -%>:<%= @group %><% end -%><% end -%>$redis $REDIS_CONF_FILE
+    daemon <% if @user -%>--user=<%= @user %><% if @group -%>:<%= @group %> <% end -%><% end -%>$redis $REDIS_CONF_FILE
     retval=$?
     echo
     [ $retval -eq 0 ] && touch $lockfile
