@@ -25,7 +25,7 @@ start() {
     [ -f "$REDIS_CONF_FILE" ] || exit 6
 
     log_daemon_msg "Starting $REDIS_NAME"
-    start-stop-daemon --start --quiet --pidfile "$REDIS_PID" --retry 5 --exec "$REDIS_EXEC" --oknodo -- "$REDIS_CONF_FILE"
+    start-stop-daemon --start --quiet --pidfile "$REDIS_PID" --retry 5 <% if @user -%>--chuid <%= @user %><% if @group -%>:<%= @group %><% end -%><% end -%> --exec "$REDIS_EXEC" --oknodo -- "$REDIS_CONF_FILE"
 
     retval=$?
     log_end_msg $retval

@@ -78,6 +78,8 @@ define redis::server (
   $redis_pid_dir           = '/var/run',
   $redis_loglevel          = 'notice',
   $redis_appedfsync        = 'everysec',
+  $user                    = undef,
+  $group                   = undef,
   $running                 = true,
   $enabled                 = true,
   $requirepass             = undef,
