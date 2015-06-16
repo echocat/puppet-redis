@@ -52,7 +52,7 @@ Most of the time you will only need `redis_version`.
   }
 ```
 To install redis from package use the following parameters.
-You will need `redis_version` and `redis_package`. 
+You will need `redis_version` and `redis_package`.
 ```puppet
   class { 'redis::install':
     redis_version  => '2.8.18-1.el6.remi',
@@ -264,6 +264,14 @@ Path for log. Full log path is <redis_log_dir>/redis_<redis_name>.log.
 #####`redis_loglevel`
 
 Loglevel of Redis. Default: 'notice' (string)
+
+#####`user`
+
+Configure which user should run the redis daemon. Default: undef (string)
+
+#####`group`
+
+Additional user group granularity for the `user` parameter. Default: undef (string)
 
 #####`running`
 
