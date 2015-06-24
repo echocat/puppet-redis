@@ -64,6 +64,15 @@
 # [*save*]
 #   Configure Redis save snapshotting. Example: [[900, 1], [300, 10]]. Default: []
 #
+# [*force_rewrite*]
+#
+#   Boolean. Default: `false`
+#
+#   Configure if the redis config is overwritten by puppet followed by a
+#   redis restart. Since redis automatically rewrite their config since
+#   version 2.8 setting this to `true` will trigger a sentinel restart on each puppet
+#   run with redis 2.8 or later.
+#
 define redis::server (
   $redis_name              = $name,
   $redis_memory            = '100mb',
@@ -96,6 +105,7 @@ define redis::server (
   $repl_timeout            = 60,
   $repl_ping_slave_period  = 10,
   $save                    = [],
+  $force_rewrite           = false,
 ) {
 
   $redis_install_dir = $::redis::install::redis_install_dir
@@ -112,6 +122,7 @@ define redis::server (
     "/etc/redis_${redis_name}.conf":
       ensure  => file,
       content => template('redis/etc/redis.conf.erb'),
+      replace => $force_rewrite,
       require => Class['redis::install'];
   }
 

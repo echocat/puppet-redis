@@ -313,6 +313,15 @@ Define the path for the append file. Optional. Default: undef
 
 Configure Redis save snapshotting. Example: [[900, 1], [300, 10]]. Default: []
 
+#####`force_rewrite`
+
+Boolean. Default: `false`
+
+Configure if the redis config is overwritten by puppet followed by a restart. 
+Since redis automatically rewrite their config since
+version 2.8 setting this to `true` will trigger a redis restart on each puppet
+run with redis 2.8 or later.
+
 ##### High Availability Options
 
 #####`slaveof`
