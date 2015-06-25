@@ -36,6 +36,12 @@ bind <%= @redis_ip %>
 # on a unix socket when not specified.
 #
 # unixsocket /var/run/redis/redis.sock
+<% if @unixsocket -%>
+unixsocket <%= @unixsocket %>
+<% end -%>
+<% if @unixsocketperm -%>
+unixsocketperm <%= @unixsocketperm %>
+<% end -%>
 
 # Close the connection after a client is idle for N seconds (0 to disable)
 timeout 0
@@ -424,11 +430,11 @@ slowlog-max-len 1024
 # small number of entries, and the biggest entry does not exceed a given
 # threshold. These thresholds can be configured using the following directives.
 <% if @redis_2_6_or_greater -%>
-hash-max-ziplist-entries 512
-hash-max-ziplist-value 64
+hash-max-ziplist-entries <%= @hash_max_ziplist_entries %>
+hash-max-ziplist-value <%= @hash_max_ziplist_value %>
 <% else -%>
-hash-max-zipmap-entries 512
-hash-max-zipmap-value 64
+hash-max-zipmap-entries <%= @hash_max_ziplist_entries %>
+hash-max-zipmap-value <%= @hash_max_ziplist_value %>
 <% end -%>
 
 # Similarly to hashes, small lists are also encoded in a special way in order
