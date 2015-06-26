@@ -71,9 +71,9 @@ define redis::sentinel (
   
   $redis_install_dir = $::redis::install::redis_install_dir
   $sentinel_init_script = $::operatingsystem ? {
-    /(Debian|Ubuntu)/                               => 'redis/etc/init.d/debian_redis-sentinel.erb',
-    /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon)/ => 'redis/etc/init.d/redhat_redis-sentinel.erb',
-    default                                         => UNDEF,
+    /(Debian|Ubuntu)/                                          => 'redis/etc/init.d/debian_redis-sentinel.erb',
+    /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon|Scientific)/ => 'redis/etc/init.d/redhat_redis-sentinel.erb',
+    default                                                    => UNDEF,
   }
 
   # redis conf file
