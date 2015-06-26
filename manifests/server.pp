@@ -110,10 +110,10 @@ define redis::server (
 
   $redis_install_dir = $::redis::install::redis_install_dir
   $redis_init_script = $::operatingsystem ? {
-    /(Debian|Ubuntu)/                               => 'redis/etc/init.d/debian_redis-server.erb',
-    /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon)/ => 'redis/etc/init.d/redhat_redis-server.erb',
-    /(SLES)/                                        => 'redis/etc/init.d/sles_redis-server.erb',
-    default                                         => UNDEF,
+    /(Debian|Ubuntu)/                                          => 'redis/etc/init.d/debian_redis-server.erb',
+    /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon|Scientific)/ => 'redis/etc/init.d/redhat_redis-server.erb',
+    /(SLES)/                                                   => 'redis/etc/init.d/sles_redis-server.erb',
+    default                                                    => UNDEF,
   }
   $redis_2_6_or_greater = versioncmp($::redis::install::redis_version,'2.6') >= 0
 
