@@ -38,7 +38,7 @@ bind <%= @redis_ip %>
 # unixsocket /var/run/redis/redis.sock
 
 # Close the connection after a client is idle for N seconds (0 to disable)
-timeout 0
+timeout <%= @redis_timeout %>
 
 # Set server verbosity to 'debug'
 # it can be one of:
