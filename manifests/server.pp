@@ -12,8 +12,16 @@
 #   Listen IP. Default: 127.0.0.1
 # [*redis_port*]
 #   Listen port of Redis. Default: 6379
+# [*redis_usesocket*]
+#   To enable unixsocket options. Default: false
+# [*redis_socket*]
+#   Unix socket to use. Default: /tmp/redis.sock
+# [*redis_socketperm*]
+#   Permission of socket file. Default: 755
 # [*redis_mempolicy*]
 #   Algorithm used to manage keys. See Redis docs for possible values. Default: allkeys-lru
+# [*redis_memsamples*]
+#   Number of samples to use for LRU policies. Default: 3
 # [*redis_timeout*]
 #   Default: 0
 # [*redis_nr_dbs*]
@@ -78,7 +86,11 @@ define redis::server (
   $redis_memory            = '100mb',
   $redis_ip                = '127.0.0.1',
   $redis_port              = 6379,
+  $redis_usesocket         = false,
+  $redis_socket            = '/tmp/redis.sock',
+  $redis_socketperm        = 755,
   $redis_mempolicy         = 'allkeys-lru',
+  $redis_memsamples        = 3,
   $redis_timeout           = 0,
   $redis_nr_dbs            = 1,
   $redis_dbfilename        = 'dump.rdb',

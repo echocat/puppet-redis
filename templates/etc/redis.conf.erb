@@ -36,6 +36,10 @@ bind <%= @redis_ip %>
 # on a unix socket when not specified.
 #
 # unixsocket /var/run/redis/redis.sock
+<% if @redis_usesocket -%>
+unixsocket <%= @redis_socket %>
+unixsocketperm <%= @redis_socketperm %>
+<% end -%>
 
 # Close the connection after a client is idle for N seconds (0 to disable)
 timeout <%= @redis_timeout %>
@@ -284,6 +288,7 @@ maxmemory-policy <%= @redis_mempolicy %>
 # using the following configuration directive.
 #
 # maxmemory-samples 3
+maxmemory-samples <%= @redis_memsamples %>
 
 ############################## APPEND ONLY MODE ###############################
 
