@@ -230,9 +230,25 @@ Default is '127.0.0.1' (string). Listen IP of redis.
 
 Listen port of Redis. Default: 6379
 
+#####`redis_usesocket`
+
+To enable unixsocket options. Default: false
+
+#####`redis_socket`
+
+Unix socket to use. Default: /tmp/redis.sock
+
+#####`redis_socketperm`
+
+Permission of socket file. Default: 755
+
 #####`redis_mempolicy`
 
 Algorithm used to manage keys. See Redis docs for possible values. Default: allkeys-lru
+
+#####`redis_memsamples`
+
+Number of samples to use for LRU policies. Default: 3
 
 #####`redis_timeout`
 
