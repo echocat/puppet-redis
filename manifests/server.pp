@@ -34,6 +34,8 @@
 #   Path for log. Full log path is <redis_log_dir>/redis_<redis_name>.log. Default: /var/log
 # [*redis_loglevel*]
 #   Loglevel of Redis. Default: notice
+# [*notify_keyspace_events*]
+#   Select which keyspace events to enable notifications for. Default: ""
 # [*running*]
 #   Configure if Redis should be running or not. Default: true
 # [*enabled*]
@@ -98,6 +100,7 @@ define redis::server (
   $redis_log_dir           = '/var/log',
   $redis_pid_dir           = '/var/run',
   $redis_loglevel          = 'notice',
+  $notify_keyspace_events  = '',
   $redis_appedfsync        = 'everysec',
   $running                 = true,
   $enabled                 = true,
