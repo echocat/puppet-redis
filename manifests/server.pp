@@ -51,7 +51,8 @@
 #   Configure the percentage size difference between the last aof filesize
 #   and the newest to trigger a rewrite. Default: 100
 # [*aof_rewrite_minsize*]
-#   Configure the minimum size in mb of the aof file to trigger size comparisons for rewriting.
+#   Configure the minimum size in mb of the aof file to trigger size
+#   comparisons for rewriting.
 #   Default: 64 (integer)
 # [*redis_enabled_append_file*]
 #   Enable custom append file. Default: false
@@ -65,6 +66,9 @@
 #   Password used when connecting to a master server which requires authentication.
 # [*slave_server_stale_data*]
 #   Configure Redis slave to server stale data
+# [*stop_writes_on_bgsave_error*]
+#   Fail hard when the hard drive fails and RDB snapshots are enabled.
+#   Default: true
 # [*slave_read_only*]
 #   Configure Redis slave to be in read-only mode
 # [*repl_timeout*]
@@ -73,6 +77,9 @@
 #   Configure Redis replication ping slave period
 # [*save*]
 #   Configure Redis save snapshotting. Example: [[900, 1], [300, 10]]. Default: []
+# [*tcp_keepalive*]
+#   If non-zero, use SO_KEEPALIVE to send TCP ACKs to clients in absence of
+#   communication. Default: 0
 #
 # [*force_rewrite*]
 #
@@ -121,6 +128,7 @@ define redis::server (
   $repl_timeout                = 60,
   $repl_ping_slave_period      = 10,
   $save                        = [],
+  $tcp_keepalive               = 0,
   $force_rewrite               = false,
 ) {
 

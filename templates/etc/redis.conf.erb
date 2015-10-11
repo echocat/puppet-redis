@@ -100,7 +100,7 @@ timeout <%= @redis_timeout %>
 # On other kernels the period depends on the kernel configuration.
 #
 # A reasonable value for this option is 60 seconds.
-tcp-keepalive 0
+tcp-keepalive <%= @tcp_keepalive %>
 
 ################################# GENERAL #####################################
 
