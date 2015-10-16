@@ -138,6 +138,18 @@ node 'redis-slave.my.domain' {
 }
 ```
 
+### Example using Hiera
+
+    redis::install::redis_package: true
+    redis::install::redis_version: '2:2.8.17-1+deb8u1'
+    redis::servers:
+      'name_server':
+        requirepass: 'strongpass'
+        enabled: true
+        redis_ip: '0.0.0.0'
+        redis_port: '6800'
+        redis_log_dir: '/var/log/redis/'
+
 ###Setting up sentinel with two monitors
 
 You can create multiple sentinels on one node. But most of the time you will
