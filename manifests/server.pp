@@ -157,15 +157,14 @@ define redis::server (
     notify  => Service["redis-server_${redis_name}"];
   }
 
-  exec { 'systemd-reload':
-    command   =>'systemctl daemon-reload',
-    path      => "/usr/local/bin/:/bin/";
-  }
-
-  exec { 'systemd-enable':
-    command =>"systemctl enable redis-server_${redis_name}",
-    path    => "/usr/local/bin/:/bin/",
-    before  => Exec["systemd-reload"];
+  exec {
+    'systemd-reload':
+      command   =>'systemctl daemon-reload',
+      path      => "/usr/local/bin/:/bin/",
+    'systemd-enable':
+      command =>"systemctl enable redis-server_${redis_name}",
+      path    => "/usr/local/bin/:/bin/",
+      before  => Exec["systemd-reload"];
   }
 
   # startup sysvinit script
