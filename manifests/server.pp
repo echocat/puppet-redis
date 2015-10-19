@@ -157,12 +157,6 @@ define redis::server (
     notify  => Service["redis-server_${redis_name}"];
   }
 
-  exec { 'systemd-enable':
-    command =>"systemctl enable redis-server_${redis_name}",
-    path    => "/usr/local/bin/:/bin/",
-    before  => Exec["systemd-reload"];
-  }
-
   exec { 'systemd-reload':
     command   =>'systemctl daemon-reload',
     path      => "/usr/local/bin/:/bin/";
@@ -228,6 +222,6 @@ define redis::server (
     enable     => $enabled,
     hasstatus  => true,
     hasrestart => true,
-    require    => File["/etc/init.d/redis-server_${redis_name}"]
+    require    => [File["/etc/init.d/redis-server_${redis_name}"],Exec["systemd-reload"]]
   }
 }
