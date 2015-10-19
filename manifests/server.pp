@@ -222,13 +222,13 @@ file { "/etc/logrotate.d/redis-server_${redis_name}":
 
  # ----------------------------------------------------------------------------
 
-  exec { 'systemd-reload_${redis_name}':
+  exec { "systemd-reload_${redis_name}":
     command   =>'systemctl daemon-reload',
     path      => "/usr/local/bin/:/bin/";
   }
 
-  exec { 'systemd-enable_${redis_name}':
-    command =>"systemctl enable redis-server_${redis_name}",
+  exec { "systemd-enable_${redis_name}":
+    command => "systemctl enable redis-server_${redis_name}",
     path    => "/usr/local/bin/:/bin/",
     before  => Exec["systemd-reload_${redis_name}"];
   }
