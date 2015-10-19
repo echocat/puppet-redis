@@ -126,9 +126,7 @@ define redis::server (
   case $::operatingsystem {
     'Debian': {
       case $::lsbdistcodename {
-        'lenny':   { $redis_init_script = 'redis/etc/init.d/debian_redis-server.erb' }
-        'squeeze': { $redis_init_script = 'redis/etc/init.d/debian_redis-server.erb' }
-        'wheezy':  { $redis_init_script = 'redis/etc/init.d/debian_redis-server.erb' }
+        /(lenny|squeeze|wheezy)/:   { $redis_init_script = 'redis/etc/init.d/debian_redis-server.erb' }
         default:   {
           $redis_init_script = 'redis/etc/systemd/debian_redis-server.erb'
         }
@@ -151,15 +149,26 @@ define redis::server (
   $redis_2_6_or_greater = versioncmp($::redis::install::redis_version,'2.6') >= 0
 
   # redis conf file
-  file {
-    "/etc/redis_${redis_name}.conf":
-      ensure  => file,
-      content => template('redis/etc/redis.conf.erb'),
-      replace => $force_rewrite,
-      require => Class['redis::install'];
+  file { "/etc/redis_${redis_name}.conf":
+    ensure  => file,
+    content => template('redis/etc/redis.conf.erb'),
+    replace => $force_rewrite,
+    require => Class['redis::install'],
+    notify  => Service["redis-server_${redis_name}"];
   }
 
-  # startup script
+  exec { 'systemd-reload':
+    command   =>'systemctl daemon-reload',
+    path      => "/usr/local/bin/:/bin/";
+  }
+
+  exec { 'systemd-enable':
+    command =>"systemctl enable redis-server_${redis_name}",
+    path    => "/usr/local/bin/:/bin/",
+    before  => Exec["systemd-reload"];
+  }
+
+  # startup sysvinit script
   file { "/etc/init.d/redis-server_${redis_name}":
     ensure  => file,
     mode    => '0755',
@@ -170,6 +179,19 @@ define redis::server (
     ],
     notify  => Service["redis-server_${redis_name}"],
   }
+
+  # startup systemd script
+  file { "/etc/systemd/system/redis-server_${redis_name}.service":
+    ensure  => file,
+    mode    => '0655',
+    content => template($redis_init_script),
+    content => template($redis_init_script),
+    require => [
+      File["/etc/redis_${redis_name}.conf"],
+      File["${redis_dir}/redis_${redis_name}"]
+    ],
+   notify  => [ Exec["systemd-enable"], Service["redis-server_${redis_name}"] ],
+ }
 
   # path for persistent data
   # If we specify a directory that's not default we need to pass it as hash
