@@ -183,7 +183,7 @@ define redis::server (
       File["/etc/redis_${redis_name}.conf"],
       File["${redis_dir}/redis_${redis_name}"]
     ],
-   notify  => [ Exec["systemd-enable"], Service["redis-server_${redis_name}"] ],
+   notify  => [ Service["redis-server_${redis_name}"] ],
  }
 
   # path for persistent data
@@ -222,6 +222,6 @@ define redis::server (
     enable     => $enabled,
     hasstatus  => true,
     hasrestart => true,
-    require    => [File["/etc/init.d/redis-server_${redis_name}"],Exec["systemd-reload"]]
+    require    => [File["/etc/init.d/redis-server_${redis_name}"]]
   }
 }
