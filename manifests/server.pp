@@ -133,16 +133,16 @@ define redis::server (
           $redis_init_script = 'redis/etc/systemd/debian_redis-server.erb'
         }
       }
-    },
+    }
     'Ubuntu': {
       $redis_init_script = 'redis/etc/init.d/debian_redis-server.erb'
-    },
+    }
     'SLES': {
       $redis_init_script = 'redis/etc/init.d/sles_redis-server.erb'
-    },
+    }
     /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon|Scientific)/: {
       $redis_init_script = 'redis/etc/init.d/redhat_redis-server.erb'
-    },
+    }
     default:   {
       $redis_init_script = undef
     }
