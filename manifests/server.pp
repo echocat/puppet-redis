@@ -122,13 +122,6 @@ define redis::server (
 
   $redis_install_dir = $::redis::install::redis_install_dir
 
-  $redis_init_script = $::operatingsystem ? {
-    /(Ubuntu)/  => 'redis/etc/init.d/debian_redis-server.erb',
-    /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon|Scientific)/ => 'redis/etc/init.d/redhat_redis-server.erb',
-    /(SLES)/    => 'redis/etc/init.d/sles_redis-server.erb',
-    default     => UNDEF,
-  }
-
   # handle init.d / systemd switch for debian
   case $::operatingsystem {
     'Debian': {
@@ -140,6 +133,18 @@ define redis::server (
           $redis_init_script = 'redis/etc/systemd/debian_redis-server.erb'
         }
       }
+    },
+    'Ubuntu': {
+      $redis_init_script = 'redis/etc/init.d/debian_redis-server.erb'
+    },
+    'SLES': {
+      $redis_init_script = 'redis/etc/init.d/sles_redis-server.erb'
+    },
+    /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon|Scientific)/: {
+      $redis_init_script = 'redis/etc/init.d/redhat_redis-server.erb'
+    },
+    default:   {
+      $redis_init_script = undef
     }
   }
 
