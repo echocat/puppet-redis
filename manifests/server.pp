@@ -148,7 +148,25 @@ define redis::server (
 
   $redis_2_6_or_greater = versioncmp($::redis::install::redis_version,'2.6') >= 0
 
-  # redis conf file
+  # ---------------------------------------------------------------------------
+
+  # path for persistent data
+  # If we specify a directory that's not default we need to pass it as hash
+  # and ensure that we do not have duplicate warning, when we have multiple
+  # redis Instances on one host
+  if ! defined(File[$redis_dir]) {
+    file { $redis_dir:
+      ensure  => directory,
+      require => Class['redis::install'],
+    }
+  }
+
+  file { "${redis_dir}/redis_${redis_name}":
+    ensure  => directory,
+    require => Class['redis::install'],
+  }
+
+  # redis general conf file
   file { "/etc/redis_${redis_name}.conf":
     ensure  => file,
     content => template('redis/etc/redis.conf.erb'),
@@ -157,10 +175,7 @@ define redis::server (
     notify  => Service["redis-server_${redis_name}"];
   }
 
-  # exec { 'systemd-reload':
-  #   command   =>'systemctl daemon-reload',
-  #   path      => "/usr/local/bin/:/bin/";
-  # }
+  # ---------------------------------------------------------------------------
 
   # startup sysvinit script
   file { "/etc/init.d/redis-server_${redis_name}":
@@ -183,37 +198,37 @@ define redis::server (
       File["/etc/redis_${redis_name}.conf"],
       File["${redis_dir}/redis_${redis_name}"]
     ],
-   notify  => [ Service["redis-server_${redis_name}"] ],
+   notify  => [ Exec["systemd-enable"], Service["redis-server_${redis_name}"] ],
  }
 
-  # path for persistent data
-  # If we specify a directory that's not default we need to pass it as hash
-  # and ensure that we do not have duplicate warning, when we have multiple
-  # redis Instances on one host
-  if ! defined(File[$redis_dir]) {
-    file { $redis_dir:
-      ensure  => directory,
-      require => Class['redis::install'],
-    }
+ # ----------------------------------------------------------------------------
+
+ # install and configure logrotate
+ if ! defined(Package['logrotate']) {
+   package { 'logrotate': ensure => installed; }
+ }
+
+ file { "/etc/logrotate.d/redis-server_${redis_name}":
+   ensure  => file,
+   content => template('redis/redis_logrotate.conf.erb'),
+   require => [
+     Package['logrotate'],
+     File["/etc/redis_${redis_name}.conf"],
+   ]
+ }
+
+
+ # ----------------------------------------------------------------------------
+
+  exec { 'systemd-reload':
+    command   =>'systemctl daemon-reload',
+    path      => "/usr/local/bin/:/bin/";
   }
 
-  file { "${redis_dir}/redis_${redis_name}":
-    ensure  => directory,
-    require => Class['redis::install'],
-  }
-
-  # install and configure logrotate
-  if ! defined(Package['logrotate']) {
-    package { 'logrotate': ensure => installed; }
-  }
-
-  file { "/etc/logrotate.d/redis-server_${redis_name}":
-    ensure  => file,
-    content => template('redis/redis_logrotate.conf.erb'),
-    require => [
-      Package['logrotate'],
-      File["/etc/redis_${redis_name}.conf"],
-    ]
+  exec { 'systemd-enable':
+    command =>"systemctl enable redis-server_${redis_name}",
+    path    => "/usr/local/bin/:/bin/",
+    before  => Exec["systemd-reload"];
   }
 
   # manage redis service
@@ -222,6 +237,6 @@ define redis::server (
     enable     => $enabled,
     hasstatus  => true,
     hasrestart => true,
-    require    => [File["/etc/init.d/redis-server_${redis_name}"]]
+    require    => File["/etc/init.d/redis-server_${redis_name}"]
   }
 }
