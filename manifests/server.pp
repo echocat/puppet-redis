@@ -185,7 +185,6 @@ define redis::server (
     ensure  => file,
     mode    => '0655',
     content => template($redis_init_script),
-    content => template($redis_init_script),
     require => [
       File["/etc/redis_${redis_name}.conf"],
       File["${redis_dir}/redis_${redis_name}"]
