@@ -122,6 +122,8 @@ define redis::server (
 
   $redis_install_dir = $::redis::install::redis_install_dir
 
+  # ---------------------------------------------------------------------------
+
   # handle init.d / systemd switch for debian
   case $::operatingsystem {
     'Debian': {
@@ -198,37 +200,37 @@ define redis::server (
       File["/etc/redis_${redis_name}.conf"],
       File["${redis_dir}/redis_${redis_name}"]
     ],
-   notify  => [ Exec["systemd-enable"], Service["redis-server_${redis_name}"] ],
+   notify  => [ Exec["systemd-enable_${redis_name}"], Service["redis-server_${redis_name}"] ],
  }
 
  # ----------------------------------------------------------------------------
 
- # install and configure logrotate
- if ! defined(Package['logrotate']) {
-   package { 'logrotate': ensure => installed; }
- }
+# install and configure logrotate
+if ! defined(Package['logrotate']) {
+  package { 'logrotate': ensure => installed; }
+}
 
- file { "/etc/logrotate.d/redis-server_${redis_name}":
+file { "/etc/logrotate.d/redis-server_${redis_name}":
    ensure  => file,
    content => template('redis/redis_logrotate.conf.erb'),
    require => [
      Package['logrotate'],
      File["/etc/redis_${redis_name}.conf"],
-   ]
- }
+ ]
+}
 
 
  # ----------------------------------------------------------------------------
 
-  exec { 'systemd-reload':
+  exec { 'systemd-reload_${redis_name}':
     command   =>'systemctl daemon-reload',
     path      => "/usr/local/bin/:/bin/";
   }
 
-  exec { 'systemd-enable':
+  exec { 'systemd-enable_${redis_name}':
     command =>"systemctl enable redis-server_${redis_name}",
     path    => "/usr/local/bin/:/bin/",
-    before  => Exec["systemd-reload"];
+    before  => Exec["systemd-reload_${redis_name}"];
   }
 
   # manage redis service
