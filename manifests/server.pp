@@ -121,12 +121,31 @@ define redis::server (
 ) {
 
   $redis_install_dir = $::redis::install::redis_install_dir
-  $redis_init_script = $::operatingsystem ? {
-    /(Debian|Ubuntu)/                                          => 'redis/etc/init.d/debian_redis-server.erb',
-    /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon|Scientific)/ => 'redis/etc/init.d/redhat_redis-server.erb',
-    /(SLES)/                                                   => 'redis/etc/init.d/sles_redis-server.erb',
-    default                                                    => UNDEF,
+
+  # handle init.d / systemd switch for debian
+  case $::operatingsystem {
+    'Debian': {
+      case $::lsbdistcodename {
+        /(lenny|squeeze|wheezy)/: { $init_script_template_path = 'redis/etc/init.d/debian_redis-server.erb' }
+        default:   {
+          $init_script_template_path = 'redis/etc/systemd/debian_redis-server.erb'
+        }
+      }
+    }
+    'Ubuntu': {
+      $init_script_template_path = 'redis/etc/init.d/debian_redis-server.erb'
+    }
+    'SLES': {
+      $init_script_template_path = 'redis/etc/init.d/sles_redis-server.erb'
+    }
+    /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon|Scientific)/: {
+      $init_script_template_path = 'redis/etc/init.d/redhat_redis-server.erb'
+    }
+    default: {
+      fail("This OS ($::operatingsystem) is not compliant with that recipe")
+    }
   }
+
   $redis_2_6_or_greater = versioncmp($::redis::install::redis_version,'2.6') >= 0
 
   # redis conf file
@@ -136,18 +155,6 @@ define redis::server (
       content => template('redis/etc/redis.conf.erb'),
       replace => $force_rewrite,
       require => Class['redis::install'];
-  }
-
-  # startup script
-  file { "/etc/init.d/redis-server_${redis_name}":
-    ensure  => file,
-    mode    => '0755',
-    content => template($redis_init_script),
-    require => [
-      File["/etc/redis_${redis_name}.conf"],
-      File["${redis_dir}/redis_${redis_name}"]
-    ],
-    notify  => Service["redis-server_${redis_name}"],
   }
 
   # path for persistent data
@@ -166,6 +173,34 @@ define redis::server (
     require => Class['redis::install'],
   }
 
+  if $init_script_template_path =~ /systemd/ {
+    $init_script = "/etc/systemd/system/redis-server_${redis_name}.service"
+    # startup systemd script
+    file { "/etc/systemd/system/redis-server_${redis_name}.service":
+      ensure  => file,
+      mode    => '0655',
+      content => template($init_script_template_path),
+      require => [
+        File["/etc/redis_${redis_name}.conf"],
+        File["${redis_dir}/redis_${redis_name}"]
+      ],
+      notify => [Exec["systemd-enable_${redis_name}"],Service["redis-server_${redis_name}"]],
+    }
+  } else {
+    $init_script = "/etc/init.d/redis-server_${redis_name}"
+    # startup sysvinit script
+    file { "/etc/init.d/redis-server_${redis_name}":
+      ensure  => file,
+      mode    => '0755',
+      content => template($init_script_template_path),
+      require => [
+        File["/etc/redis_${redis_name}.conf"],
+        File["${redis_dir}/redis_${redis_name}"]
+      ],
+      notify  => Service["redis-server_${redis_name}"],
+    }
+  }
+
   # install and configure logrotate
   if ! defined(Package['logrotate']) {
     package { 'logrotate': ensure => installed; }
@@ -180,12 +215,23 @@ define redis::server (
     ]
   }
 
+  exec { "systemd-reload_${redis_name}":
+    command   =>'systemctl daemon-reload',
+    path      => '/usr/local/bin/:/bin/';
+  }
+
+  exec { "systemd-enable_${redis_name}":
+    command => "systemctl enable redis-server_${redis_name}",
+    path    => '/usr/local/bin/:/bin/',
+    before  => Exec["systemd-reload_${redis_name}"];
+  }
+
   # manage redis service
   service { "redis-server_${redis_name}":
     ensure     => $running,
     enable     => $enabled,
     hasstatus  => true,
     hasrestart => true,
-    require    => File["/etc/init.d/redis-server_${redis_name}"]
+    require    => File[$init_script]
   }
 }
