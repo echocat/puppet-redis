@@ -126,20 +126,20 @@ define redis::server (
   case $::operatingsystem {
     'Debian': {
       case $::lsbdistcodename {
-        /(lenny|squeeze|wheezy)/: { $redis_init_script = 'redis/etc/init.d/debian_redis-server.erb' }
+        /(lenny|squeeze|wheezy)/: { $init_script_template_path = 'redis/etc/init.d/debian_redis-server.erb' }
         default:   {
-          $redis_init_script = 'redis/etc/systemd/debian_redis-server.erb'
+          $init_script_template_path = 'redis/etc/systemd/debian_redis-server.erb'
         }
       }
     }
     'Ubuntu': {
-      $redis_init_script = 'redis/etc/init.d/debian_redis-server.erb'
+      $init_script_template_path = 'redis/etc/init.d/debian_redis-server.erb'
     }
     'SLES': {
-      $redis_init_script = 'redis/etc/init.d/sles_redis-server.erb'
+      $init_script_template_path = 'redis/etc/init.d/sles_redis-server.erb'
     }
     /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon|Scientific)/: {
-      $redis_init_script = 'redis/etc/init.d/redhat_redis-server.erb'
+      $init_script_template_path = 'redis/etc/init.d/redhat_redis-server.erb'
     }
     default: {
       fail("This OS ($::operatingsystem) is not compliant with that recipe")
@@ -161,7 +161,7 @@ define redis::server (
   file { "/etc/init.d/redis-server_${redis_name}":
     ensure  => file,
     mode    => '0755',
-    content => template($redis_init_script),
+    content => template($init_script_template_path),
     require => [
       File["/etc/redis_${redis_name}.conf"],
       File["${redis_dir}/redis_${redis_name}"]
@@ -185,13 +185,13 @@ define redis::server (
     require => Class['redis::install'],
   }
 
-  if $redis_init_script =~ /systemd/ {
-    warning("systemd compliant")
+  if $init_script_template_path =~ /systemd/ {
+    $init_script = "/etc/systemd/system/redis-server_${redis_name}.service"
     # startup systemd script
     file { "/etc/systemd/system/redis-server_${redis_name}.service":
       ensure  => file,
       mode    => '0655',
-      content => template($redis_init_script),
+      content => template($init_script_template_path),
       require => [
         File["/etc/redis_${redis_name}.conf"],
         File["${redis_dir}/redis_${redis_name}"]
@@ -199,12 +199,12 @@ define redis::server (
       notify => [Exec["systemd-enable_${redis_name}"],Service["redis-server_${redis_name}"]],
     }
   } else {
-    warning("init.d compliant")
+    $init_script = "/etc/init.d/redis-server_${redis_name}"
     # startup sysvinit script
     file { "/etc/init.d/redis-server_${redis_name}":
       ensure  => file,
       mode    => '0755',
-      content => template($redis_init_script),
+      content => template($init_script_template_path),
       require => [
         File["/etc/redis_${redis_name}.conf"],
         File["${redis_dir}/redis_${redis_name}"]
@@ -244,6 +244,6 @@ define redis::server (
     enable     => $enabled,
     hasstatus  => true,
     hasrestart => true,
-    require    => File["/etc/init.d/redis-server_${redis_name}"]
+    require    => File[$init_script]
   }
 }
