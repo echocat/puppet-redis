@@ -1,0 +1,14 @@
+[Unit]
+Description=Advanced key-value store
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=<%= @redis_install_dir %>/redis-server /etc/redis_<%= @redis_name %>.conf
+ExecStop=/usr/bin/redis-cli shutdown
+Restart=always
+User=redis
+Group=redis
+
+[Install]
+WantedBy=multi-user.target
