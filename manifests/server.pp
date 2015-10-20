@@ -157,18 +157,6 @@ define redis::server (
       require => Class['redis::install'];
   }
 
-  # startup script
-  file { "/etc/init.d/redis-server_${redis_name}":
-    ensure  => file,
-    mode    => '0755',
-    content => template($init_script_template_path),
-    require => [
-      File["/etc/redis_${redis_name}.conf"],
-      File["${redis_dir}/redis_${redis_name}"]
-    ],
-    notify  => Service["redis-server_${redis_name}"],
-  }
-
   # path for persistent data
   # If we specify a directory that's not default we need to pass it as hash
   # and ensure that we do not have duplicate warning, when we have multiple
