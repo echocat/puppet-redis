@@ -119,6 +119,8 @@ define redis::server (
   $save                    = [],
   $force_rewrite           = false,
 ) {
+  $redis_user              = $::redis::install::redis_user
+  $redis_group             = $::redis::install::redis_group
 
   $redis_install_dir = $::redis::install::redis_install_dir
   $redis_init_script = $::operatingsystem ? {
@@ -164,6 +166,8 @@ define redis::server (
   file { "${redis_dir}/redis_${redis_name}":
     ensure  => directory,
     require => Class['redis::install'],
+    owner   => $redis_user,
+    group   => $redis_group,
   }
 
   # install and configure logrotate

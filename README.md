@@ -216,6 +216,22 @@ directoy like '/opt/redis-2.8.8/'
 Default is '/usr/bin' (string).
 The dir to which the newly built redis binaries are copied.
 
+#####`redis_user`
+
+Redis system user. Default: undef (string)
+Default 'undef' results to 'root' as redis system user
+
+Some redis install packages create the redis system user by default (at 
+least SLES and Ubuntu provide redis install packages).
+Normally the log directory and the pid directory are created also by
+the redis install package. Therefor, these values must be adjusted too.
+
+
+#####`redis_group`
+
+Redis system group. Default: undef (string)
+Default 'undef' results to 'root' as redis system group
+
 ####Defined Type: `redis::server`
 
 Used to configure redis instances. You can setup multiple redis servers on the
