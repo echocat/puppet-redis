@@ -22,7 +22,8 @@
 ### END INIT INFO
 
 EXEC=/usr/sbin/redis-server
-USER=redis
+USER=<%= @redis_user or 'root' %>
+GROUP=<%= @redis_group or 'root' %>
 STATE=<%= @redis_pid_dir %>
 CONF=/etc
 PIDFILE=${STATE}/redis_<%= @redis_name %>.pid
@@ -31,7 +32,7 @@ CONFIG=${CONF}/redis_<%= @redis_name %>.conf
 . /etc/rc.status
 
 if [ ! -d $STATE ]; then
-  install -d $state -o $USER -g $USER -m 0755 $STATE
+  install -d $state -o $USER -g $GROUP -m 0755 $STATE
 fi
 
 start() {
