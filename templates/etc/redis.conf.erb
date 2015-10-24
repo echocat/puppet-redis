@@ -232,7 +232,7 @@ dir <%= @redis_dir %>/redis_<%= @redis_name %>
 #    an error "SYNC with master in progress" to all the kind of commands
 #    but to INFO and SLAVEOF.
 #
-slave-serve-stale-data <% if @slave_serve_stale_data -%>yes<% else -%>no<% end -%>
+slave-serve-stale-data <%= @slave_serve_stale_data ? "yes" : "no" %>
 
 # You can configure a slave instance to accept writes or not. Writing against
 # a slave instance may be useful to store some ephemeral data (because data
@@ -249,7 +249,7 @@ slave-serve-stale-data <% if @slave_serve_stale_data -%>yes<% else -%>no<% end -
 # security of read only slaves using 'rename-command' to shadow all the
 # administrative / dangerous commands.
 <% if @redis_2_6_or_greater -%>
-slave-read-only <% if @slave_read_only -%>yes<% else -%>no<% end -%>
+slave-read-only <%= @slave_read_only ? "yes" : "no" %>
 <% end -%>
 
 # Replication SYNC strategy: disk or socket.
@@ -365,7 +365,7 @@ repl-disable-tcp-nodelay no
 # Redis Sentinel for promotion.
 #
 # By default the priority is 100.
-slave-priority 100
+#slave-priority 100
 
 # It is possible for a master to stop accepting writes if there are less than
 # N slaves connected, having a lag less or equal than M seconds.
@@ -520,7 +520,7 @@ maxmemory-samples <%= @redis_memsamples %>
 #
 # Please check http://redis.io/topics/persistence for more information.
 
-appendonly <% if @redis_append_enable -%> yes <% else -%> no <% end -%>
+appendonly <%= @redis_append_enable ? "yes" : "no" %>
 
 # The name of the append only file (default: "appendonly.aof")
 
@@ -573,7 +573,7 @@ appendfsync <%= @redis_appendfsync %>
 # If you have latency problems turn this to "yes". Otherwise leave it as
 # "no" that is the safest pick from the point of view of durability.
 
-no-appendfsync-on-rewrite <% if @appendfsync_on_rewrite -%> yes <% else -%>no<% end -%>
+no-appendfsync-on-rewrite <%= @appendfsync_on_rewrite ? "yes" : "no" %>
 
 # Automatic rewrite of the append only file.
 # Redis is able to automatically rewrite the log file implicitly calling
@@ -635,7 +635,7 @@ aof-load-truncated yes
 # termination of the script.
 #
 # Set it to 0 or a negative value for unlimited execution without warnings.
-lua-time-limit 5000
+#lua-time-limit 5000
 
 ################################ REDIS CLUSTER  ###############################
 #
