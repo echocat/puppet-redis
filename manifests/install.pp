@@ -33,6 +33,10 @@ class redis::install (
     case $::operatingsystem {
       'Debian', 'Ubuntu': {
         package { 'redis-server' : ensure => $redis_version, }
+        service { 'redis-server' :
+          ensure    => stopped,
+          subscribe => Package['redis-server']
+        }
       }
       'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon', 'Scientific', 'SLES': {
         package { 'redis' : ensure => $redis_version, }
