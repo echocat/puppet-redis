@@ -34,6 +34,8 @@
 #   Path for log. Full log path is <redis_log_dir>/redis_<redis_name>.log. Default: /var/log
 # [*redis_loglevel*]
 #   Loglevel of Redis. Default: notice
+# [*notify_keyspace_events*]
+#   Select which keyspace events to enable notifications for. Default: ""
 # [*running*]
 #   Configure if Redis should be running or not. Default: true
 # [*enabled*]
@@ -49,7 +51,8 @@
 #   Configure the percentage size difference between the last aof filesize
 #   and the newest to trigger a rewrite. Default: 100
 # [*aof_rewrite_minsize*]
-#   Configure the minimum size in mb of the aof file to trigger size comparisons for rewriting.
+#   Configure the minimum size in mb of the aof file to trigger size
+#   comparisons for rewriting.
 #   Default: 64 (integer)
 # [*redis_enabled_append_file*]
 #   Enable custom append file. Default: false
@@ -63,6 +66,9 @@
 #   Password used when connecting to a master server which requires authentication.
 # [*slave_server_stale_data*]
 #   Configure Redis slave to server stale data
+# [*stop_writes_on_bgsave_error*]
+#   Fail hard when the hard drive fails and RDB snapshots are enabled.
+#   Default: true
 # [*slave_read_only*]
 #   Configure Redis slave to be in read-only mode
 # [*repl_timeout*]
@@ -71,6 +77,9 @@
 #   Configure Redis replication ping slave period
 # [*save*]
 #   Configure Redis save snapshotting. Example: [[900, 1], [300, 10]]. Default: []
+# [*tcp_keepalive*]
+#   If non-zero, use SO_KEEPALIVE to send TCP ACKs to clients in absence of
+#   communication. Default: 0
 #
 # [*force_rewrite*]
 #
@@ -82,42 +91,45 @@
 #   run with redis 2.8 or later.
 #
 define redis::server (
-  $redis_name              = $name,
-  $redis_memory            = '100mb',
-  $redis_ip                = '127.0.0.1',
-  $redis_port              = 6379,
-  $redis_usesocket         = false,
-  $redis_socket            = '/tmp/redis.sock',
-  $redis_socketperm        = 755,
-  $redis_mempolicy         = 'allkeys-lru',
-  $redis_memsamples        = 3,
-  $redis_timeout           = 0,
-  $redis_nr_dbs            = 1,
-  $redis_dbfilename        = 'dump.rdb',
-  $redis_dir               = '/var/lib',
-  $redis_log_dir           = '/var/log',
-  $redis_pid_dir           = '/var/run',
-  $redis_loglevel          = 'notice',
-  $redis_appedfsync        = 'everysec',
-  $running                 = true,
-  $enabled                 = true,
-  $requirepass             = undef,
-  $maxclients              = undef,
-  $appendfsync_on_rewrite  = false,
-  $aof_rewrite_percentage  = 100,
-  $aof_rewrite_minsize     = 64,
-  $redis_appendfsync       = 'everysec',
-  $redis_enabled_append_file = false,
-  $redis_append_file       = undef,
-  $redis_append_enable     = false,
-  $slaveof                 = undef,
-  $masterauth              = undef,
-  $slave_serve_stale_data  = true,
-  $slave_read_only         = true,
-  $repl_timeout            = 60,
-  $repl_ping_slave_period  = 10,
-  $save                    = [],
-  $force_rewrite           = false,
+  $redis_name                  = $name,
+  $redis_memory                = '100mb',
+  $redis_ip                    = '127.0.0.1',
+  $redis_port                  = 6379,
+  $redis_usesocket             = false,
+  $redis_socket                = '/tmp/redis.sock',
+  $redis_socketperm            = 755,
+  $redis_mempolicy             = 'allkeys-lru',
+  $redis_memsamples            = 3,
+  $redis_timeout               = 0,
+  $redis_nr_dbs                = 1,
+  $redis_dbfilename            = 'dump.rdb',
+  $redis_dir                   = '/var/lib',
+  $redis_log_dir               = '/var/log',
+  $redis_pid_dir               = '/var/run',
+  $redis_loglevel              = 'notice',
+  $notify_keyspace_events      = '',
+  $redis_appedfsync            = 'everysec',
+  $running                     = true,
+  $enabled                     = true,
+  $requirepass                 = undef,
+  $maxclients                  = undef,
+  $appendfsync_on_rewrite      = false,
+  $aof_rewrite_percentage      = 100,
+  $aof_rewrite_minsize         = 64,
+  $redis_appendfsync           = 'everysec',
+  $redis_enabled_append_file   = false,
+  $redis_append_file           = undef,
+  $redis_append_enable         = false,
+  $slaveof                     = undef,
+  $masterauth                  = undef,
+  $slave_serve_stale_data      = true,
+  $stop_writes_on_bgsave_error = true,
+  $slave_read_only             = true,
+  $repl_timeout                = 60,
+  $repl_ping_slave_period      = 10,
+  $save                        = [],
+  $tcp_keepalive               = 0,
+  $force_rewrite               = false,
 ) {
   $redis_user              = $::redis::install::redis_user
   $redis_group             = $::redis::install::redis_group
