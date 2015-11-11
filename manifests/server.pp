@@ -71,6 +71,10 @@
 #   Configure Redis replication ping slave period
 # [*save*]
 #   Configure Redis save snapshotting. Example: [[900, 1], [300, 10]]. Default: []
+# [*hash_max_ziplist_entries*]
+#   Threshold for ziplist entries. Default: 512
+# [*hash_max_ziplist_value*]
+#   Threshold for ziplist value. Default: 64
 #
 # [*force_rewrite*]
 #
@@ -117,6 +121,8 @@ define redis::server (
   $repl_timeout            = 60,
   $repl_ping_slave_period  = 10,
   $save                    = [],
+  $hash_max_ziplist_entries = 512,
+  $hash_max_ziplist_value  = 64,
   $force_rewrite           = false,
 ) {
 
