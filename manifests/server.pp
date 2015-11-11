@@ -12,8 +12,16 @@
 #   Listen IP. Default: 127.0.0.1
 # [*redis_port*]
 #   Listen port of Redis. Default: 6379
+# [*redis_usesocket*]
+#   To enable unixsocket options. Default: false
+# [*redis_socket*]
+#   Unix socket to use. Default: /tmp/redis.sock
+# [*redis_socketperm*]
+#   Permission of socket file. Default: 755
 # [*redis_mempolicy*]
 #   Algorithm used to manage keys. See Redis docs for possible values. Default: allkeys-lru
+# [*redis_memsamples*]
+#   Number of samples to use for LRU policies. Default: 3
 # [*redis_timeout*]
 #   Default: 0
 # [*redis_nr_dbs*]
@@ -67,17 +75,26 @@
 #   Threshold for ziplist entries. Default: 512
 # [*hash_max_ziplist_value*]
 #   Threshold for ziplist value. Default: 64
-# [*unixsocket*]
-#   Optional full path to the UNIX socket on which Redis should listen.
-# [*unixsocketperm*]
-#   Optional file permissions for the above UNIX socket.
+#
+# [*force_rewrite*]
+#
+#   Boolean. Default: `false`
+#
+#   Configure if the redis config is overwritten by puppet followed by a
+#   redis restart. Since redis automatically rewrite their config since
+#   version 2.8 setting this to `true` will trigger a sentinel restart on each puppet
+#   run with redis 2.8 or later.
 #
 define redis::server (
   $redis_name              = $name,
   $redis_memory            = '100mb',
   $redis_ip                = '127.0.0.1',
   $redis_port              = 6379,
+  $redis_usesocket         = false,
+  $redis_socket            = '/tmp/redis.sock',
+  $redis_socketperm        = 755,
   $redis_mempolicy         = 'allkeys-lru',
+  $redis_memsamples        = 3,
   $redis_timeout           = 0,
   $redis_nr_dbs            = 1,
   $redis_dbfilename        = 'dump.rdb',
@@ -106,16 +123,15 @@ define redis::server (
   $save                    = [],
   $hash_max_ziplist_entries = 512,
   $hash_max_ziplist_value  = 64,
-  $unixsocket              = undef,
-  $unixsocketperm          = undef,
+  $force_rewrite           = false,
 ) {
 
   $redis_install_dir = $::redis::install::redis_install_dir
   $redis_init_script = $::operatingsystem ? {
-    /(Debian|Ubuntu)/                               => 'redis/etc/init.d/debian_redis-server.erb',
-    /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon)/ => 'redis/etc/init.d/redhat_redis-server.erb',
-    /(SLES)/                                        => 'redis/etc/init.d/sles_redis-server.erb',
-    default                                         => UNDEF,
+    /(Debian|Ubuntu)/                                          => 'redis/etc/init.d/debian_redis-server.erb',
+    /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon|Scientific)/ => 'redis/etc/init.d/redhat_redis-server.erb',
+    /(SLES)/                                                   => 'redis/etc/init.d/sles_redis-server.erb',
+    default                                                    => UNDEF,
   }
   $redis_2_6_or_greater = versioncmp($::redis::install::redis_version,'2.6') >= 0
 
@@ -124,8 +140,8 @@ define redis::server (
     "/etc/redis_${redis_name}.conf":
       ensure  => file,
       content => template('redis/etc/redis.conf.erb'),
-      require => Class['redis::install'],
-      notify  => Service["redis-server_${redis_name}"],
+      replace => $force_rewrite,
+      require => Class['redis::install'];
   }
 
   # startup script
@@ -176,5 +192,6 @@ define redis::server (
     enable     => $enabled,
     hasstatus  => true,
     hasrestart => true,
+    require    => File["/etc/init.d/redis-server_${redis_name}"]
   }
 }
