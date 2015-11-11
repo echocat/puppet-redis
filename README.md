@@ -230,9 +230,25 @@ Default is '127.0.0.1' (string). Listen IP of redis.
 
 Listen port of Redis. Default: 6379
 
+#####`redis_usesocket`
+
+To enable unixsocket options. Default: false
+
+#####`redis_socket`
+
+Unix socket to use. Default: /tmp/redis.sock
+
+#####`redis_socketperm`
+
+Permission of socket file. Default: 755
+
 #####`redis_mempolicy`
 
 Algorithm used to manage keys. See Redis docs for possible values. Default: allkeys-lru
+
+#####`redis_memsamples`
+
+Number of samples to use for LRU policies. Default: 3
 
 #####`redis_timeout`
 
@@ -312,6 +328,15 @@ Define the path for the append file. Optional. Default: undef
 #####`save`
 
 Configure Redis save snapshotting. Example: [[900, 1], [300, 10]]. Default: []
+
+#####`force_rewrite`
+
+Boolean. Default: `false`
+
+Configure if the redis config is overwritten by puppet followed by a restart. 
+Since redis automatically rewrite their config since
+version 2.8 setting this to `true` will trigger a redis restart on each puppet
+run with redis 2.8 or later.
 
 ##### High Availability Options
 

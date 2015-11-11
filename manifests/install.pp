@@ -45,10 +45,16 @@ class redis::install (
     # install necessary packages for build.
     case $::operatingsystem {
       'Debian', 'Ubuntu': {
-        ensure_packages('build-essential', {'before' => Anchor['redis::prepare_build']} )
+        ensure_packages('build-essential')
+        Package['build-essential'] -> Anchor['redis::prepare_build']
       }
       'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon', 'Scientific': {
-        ensure_packages(['make', 'gcc', 'glibc-devel'], {'before' => Anchor['redis::prepare_build']})
+        ensure_packages('make')
+        Package['make'] -> Anchor['redis::prepare_build']
+        ensure_packages('gcc')
+        Package['gcc'] -> Anchor['redis::prepare_build']
+        ensure_packages('glibc-devel')
+        Package['glibc-devel'] -> Anchor['redis::prepare_build']
       }
       default: {
         fail('The module does not support this OS.')
