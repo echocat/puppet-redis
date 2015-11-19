@@ -184,7 +184,7 @@ The redis service(s) are configured with the defined type `redis::server`.
 ####Class: `redis::install`
 
 This class downloads, compiles and installs redis. It does not configure any
-redis services. This is done by defimed type redis::server.
+redis services. This is done by defined type redis::server.
 
 **Parameters within `redis::install`:**
 
