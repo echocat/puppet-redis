@@ -1,3 +1,21 @@
+## 2015-12-02 - 1.7.0 (Feature/Bugfix release)
+
+#### Features:
+
+- (3236f41) #33 add Scientific Linux support
+- (ad5d3c1) #37 Server: add parameters `redis_usesocket` `redis_socket` `redis_socketperm` `redis_memsamples`
+- (edf870b) #31 Server: add parameters `force_rewrite`
+- (e1c2011) #53 Server: add parameters `hash_max_ziplist_entries` and `hash_max_ziplist_value`
+- (f1006e2) #48 Server: add parameters `redis_user` and `redis_group`
+- (42bb23f) #44 Sentinel: explititly define sentinel pidfile
+
+#### Bugfixes:
+
+- (3e920e3) #35 Server: correct usage of `redis_timeout` in servers
+- (f8e44b2) #39 avoid conflicts build-essential
+- (75cffe8) #51 prevent default redis-server from automatically start
+
+
 ## 2015-05-11 - 1.6.0 (Feature/Bugfix release)
 
 #### Features:
