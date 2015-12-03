@@ -40,7 +40,8 @@
 #   sentinel restart. Since sentinels automatically rewrite their config since
 #   version 2.8 setting this to `true` will trigger a sentinel restart on each puppet
 #   run with redis 2.8 or later.
-#
+# [*manage_logrotate*]
+#   Configure logrotate rules for redis sentinel. Default: true
 define redis::sentinel (
   $ensure           = 'present',
   $sentinel_name    = $name,
@@ -64,6 +65,7 @@ define redis::sentinel (
   $running          = true,
   $enabled          = true,
   $force_rewrite    = false,
+  $manage_logrotate = true,
 ) {
 
   # validate parameters
@@ -101,18 +103,20 @@ define redis::sentinel (
     hasrestart => true,
   }
 
-  # install and configure logrotate
-  if ! defined(Package['logrotate']) {
-    package { 'logrotate': ensure => installed; }
-  }
+  if ($manage_logrotate == true){
+    # install and configure logrotate
+    if ! defined(Package['logrotate']) {
+      package { 'logrotate': ensure => installed; }
+    }
 
-  file { "/etc/logrotate.d/redis-sentinel_${sentinel_name}":
-    ensure  => file,
-    content => template('redis/sentinel_logrotate.conf.erb'),
-    require => [
-      Package['logrotate'],
-      File["/etc/redis-sentinel_${sentinel_name}.conf"],
-    ]
+    file { "/etc/logrotate.d/redis-sentinel_${sentinel_name}":
+      ensure  => file,
+      content => template('redis/sentinel_logrotate.conf.erb'),
+      require => [
+        Package['logrotate'],
+        File["/etc/redis-sentinel_${sentinel_name}.conf"],
+      ]
+    }
   }
 
 }
