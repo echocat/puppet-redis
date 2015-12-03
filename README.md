@@ -366,6 +366,10 @@ Since redis automatically rewrite their config since
 version 2.8 setting this to `true` will trigger a redis restart on each puppet
 run with redis 2.8 or later.
 
+#####`manage_logrotate`
+
+Configure logrotate rules for redis server. Default: true
+
 ##### High Availability Options
 
 #####`slaveof`
@@ -458,6 +462,10 @@ Configure if the sentinels config is overwritten by puppet followed by a
 sentinel restart. Since sentinels automatically rewrite their config since
 version 2.8 setting this to `true` will trigger a sentinel restart on each puppet
 run with redis 2.8 or later.
+
+#####`manage_logrotate`
+
+Configure logrotate rules for redis server. Default: true
 
 ##Requirements
 
