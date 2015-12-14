@@ -84,7 +84,8 @@
 #   redis restart. Since redis automatically rewrite their config since
 #   version 2.8 setting this to `true` will trigger a sentinel restart on each puppet
 #   run with redis 2.8 or later.
-#
+# [*manage_logrotate*]
+#   Configure logrotate rules for redis server. Default: true
 define redis::server (
   $redis_name              = $name,
   $redis_memory            = '100mb',
@@ -124,6 +125,7 @@ define redis::server (
   $hash_max_ziplist_entries = 512,
   $hash_max_ziplist_value  = 64,
   $force_rewrite           = false,
+  $manage_logrotate        = true,
 ) {
   $redis_user              = $::redis::install::redis_user
   $redis_group             = $::redis::install::redis_group
@@ -176,18 +178,20 @@ define redis::server (
     group   => $redis_group,
   }
 
-  # install and configure logrotate
-  if ! defined(Package['logrotate']) {
-    package { 'logrotate': ensure => installed; }
-  }
+  if ($manage_logrotate == true){
+    # install and configure logrotate
+    if ! defined(Package['logrotate']) {
+      package { 'logrotate': ensure => installed; }
+    }
 
-  file { "/etc/logrotate.d/redis-server_${redis_name}":
-    ensure  => file,
-    content => template('redis/redis_logrotate.conf.erb'),
-    require => [
-      Package['logrotate'],
-      File["/etc/redis_${redis_name}.conf"],
-    ]
+    file { "/etc/logrotate.d/redis-server_${redis_name}":
+      ensure  => file,
+      content => template('redis/redis_logrotate.conf.erb'),
+      require => [
+        Package['logrotate'],
+        File["/etc/redis_${redis_name}.conf"],
+      ]
+    }
   }
 
   # manage redis service
