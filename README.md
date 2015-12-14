@@ -138,6 +138,18 @@ node 'redis-slave.my.domain' {
 }
 ```
 
+### Example using Hiera
+
+    redis::install::redis_package: true
+    redis::install::redis_version: '2:2.8.17-1+deb8u1'
+    redis::servers:
+      'name_server':
+        requirepass: 'strongpass'
+        enabled: true
+        redis_ip: '0.0.0.0'
+        redis_port: '6800'
+        redis_log_dir: '/var/log/redis/'
+
 ###Setting up sentinel with two monitors
 
 You can create multiple sentinels on one node. But most of the time you will
@@ -184,7 +196,7 @@ The redis service(s) are configured with the defined type `redis::server`.
 ####Class: `redis::install`
 
 This class downloads, compiles and installs redis. It does not configure any
-redis services. This is done by defimed type redis::server.
+redis services. This is done by defined type redis::server.
 
 **Parameters within `redis::install`:**
 
@@ -203,6 +215,22 @@ directoy like '/opt/redis-2.8.8/'
 
 Default is '/usr/bin' (string).
 The dir to which the newly built redis binaries are copied.
+
+#####`redis_user`
+
+Redis system user. Default: undef (string)
+Default 'undef' results to 'root' as redis system user
+
+Some redis install packages create the redis system user by default (at 
+least SLES and Ubuntu provide redis install packages).
+Normally the log directory and the pid directory are created also by
+the redis install package. Therefor, these values must be adjusted too.
+
+
+#####`redis_group`
+
+Redis system group. Default: undef (string)
+Default 'undef' results to 'root' as redis system group
 
 ####Defined Type: `redis::server`
 

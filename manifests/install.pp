@@ -14,17 +14,29 @@
 # [*redis_install_dir*]
 #   The dir to which the newly built redis binaries are copied. Default value is '/usr/bin'.
 #
+# [*redis_user*]
+#   The redis system user. Default value is 'undef', which results to 'root' as system user.
+#
+# [*redis_group*]
+#   The redis system group. Default value is 'undef', which results to 'root' as system group.
+#
 class redis::install (
   $redis_version     = $::redis::params::redis_version,
   $redis_build_dir   = $::redis::params::redis_build_dir,
   $redis_install_dir = $::redis::params::redis_install_dir,
   $redis_package     = $::redis::params::redis_install_package,
-  $download_tool     = $::redis::params::download_tool
+  $download_tool     = $::redis::params::download_tool,
+  $redis_user        = $::redis::params::redis_user,
+  $redis_group       = $::redis::params::redis_group,
 ) inherits redis {
   if ( $redis_package == true ) {
     case $::operatingsystem {
       'Debian', 'Ubuntu': {
         package { 'redis-server' : ensure => $redis_version, }
+        service { 'redis-server' :
+          ensure    => stopped,
+          subscribe => Package['redis-server']
+        }
       }
       'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon', 'Scientific', 'SLES': {
         package { 'redis' : ensure => $redis_version, }

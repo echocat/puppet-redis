@@ -4,6 +4,16 @@
 #
 # === Parameters
 #
-# None.
+# [*servers*] 
+# Hash for servers instantiation from hiera  
 #
-class redis inherits redis::params {}
+class redis (
+  # START Hiera Lookups ###
+  $servers = {},
+  ### END Hiera Lookups ###
+) inherits redis::params {
+
+  create_resources('redis::server', $servers)
+
+}
+
