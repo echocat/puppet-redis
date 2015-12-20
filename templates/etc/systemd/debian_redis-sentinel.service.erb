@@ -1,0 +1,17 @@
+[Unit]
+Description=Redis Sentinel <%= @sentinel_name %>
+After=network.target
+
+[Service]
+Type=forking
+PIDFile=<%= @sentinel_pid_dir %>/redis-sentinel_<%= @sentinel_name %>.pid
+ExecStartPre=/bin/mkdir -p <%= @sentinel_pid_dir %>
+ExecStartPre=/bin/chown redis:redis <%= @sentinel_pid_dir %>
+ExecStartPre=/bin/mkdir -p <%= @sentinel_log_dir %>
+ExecStartPre=/bin/chown redis:redis <%= @sentinel_log_dir %>
+
+ExecStart=/sbin/start-stop-daemon --start --chuid redis:redis --pidfile <%= @sentinel_pid_dir %>/redis_<%= @sentinel_name %>.pid --umask 007 --exec <%= @redis_install_dir %>/redis-server -- /etc/redis-sentinel_<%= @sentinel_name %>.conf --sentinel
+ExecReload=/bin/kill -USR2 $MAINPID
+
+[Install]
+WantedBy=multi-user.target
