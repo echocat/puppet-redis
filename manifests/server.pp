@@ -135,6 +135,13 @@ define redis::server (
     /(SLES)/                                                   => 'redis/etc/init.d/sles_redis-server.erb',
     default                                                    => UNDEF,
   }
+
+  $systemd_os = $::operatingsystem ? {
+    /(Debian|Ubuntu)/ => true,
+    default           => false,
+  }
+
+
   $redis_2_6_or_greater = versioncmp($::redis::install::redis_version,'2.6') >= 0
 
   # redis conf file
@@ -145,17 +152,40 @@ define redis::server (
       replace => $force_rewrite,
       require => Class['redis::install'];
   }
+  
 
-  # startup script
-  file { "/etc/init.d/redis-server_${redis_name}":
-    ensure  => file,
-    mode    => '0755',
-    content => template($redis_init_script),
-    require => [
-      File["/etc/redis_${redis_name}.conf"],
-      File["${redis_dir}/redis_${redis_name}"]
-    ],
-    notify  => Service["redis-server_${redis_name}"],
+  if $systemd_os {
+
+    $service_provider = 'systemd'
+    $script_name = "/lib/systemd/system/redis-server_${redis_name}.service"
+
+    file { $script_name :
+      ensure  => file,
+      mode    => '0755',
+      content => template('redis/etc/systemd/debian_redis-server.service.erb'),
+      require => [
+        File["/etc/redis_${redis_name}.conf"],
+        File["${redis_dir}/redis_${redis_name}"]
+      ],
+      notify  => Service["redis-server_${redis_name}"],
+    }
+  } else {
+
+    $service_provider = 'init'
+    $script_name = "/etc/init.d/redis-server_${redis_name}"
+
+    # startup script
+    file { $script_name :
+      ensure  => file,
+      mode    => '0755',
+      content => template($redis_init_script),
+      require => [
+        File["/etc/redis_${redis_name}.conf"],
+        File["${redis_dir}/redis_${redis_name}"]
+      ],
+      notify  => Service["redis-server_${redis_name}"],
+    }
+
   }
 
   # path for persistent data
@@ -194,8 +224,11 @@ define redis::server (
   service { "redis-server_${redis_name}":
     ensure     => $running,
     enable     => $enabled,
+    provider   => $service_provider,
     hasstatus  => true,
     hasrestart => true,
-    require    => File["/etc/init.d/redis-server_${redis_name}"]
+    require    => [
+      File[$script_name]
+    ]
   }
 }

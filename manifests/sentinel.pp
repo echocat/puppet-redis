@@ -65,10 +65,12 @@ define redis::sentinel (
   $enabled          = true,
   $force_rewrite    = false,
 ) {
+  $redis_user              = $::redis::install::redis_user
+  $redis_group             = $::redis::install::redis_group
 
   # validate parameters
   validate_bool($force_rewrite)
-  
+
   $redis_install_dir = $::redis::install::redis_install_dir
   $sentinel_init_script = $::operatingsystem ? {
     /(Debian|Ubuntu)/                                          => 'redis/etc/init.d/debian_redis-sentinel.erb',
@@ -76,29 +78,68 @@ define redis::sentinel (
     default                                                    => UNDEF,
   }
 
+  $systemd_os = $::operatingsystem ? {
+    /(Debian|Ubuntu)/ => true,
+    default           => false,
+  }
+
   # redis conf file
   file {
     "/etc/redis-sentinel_${sentinel_name}.conf":
       ensure  => file,
+      owner   => $redis_user,
+      group   => $redis_group,
+      mode    => '0666',
       content => template('redis/etc/sentinel.conf.erb'),
       replace => $force_rewrite,
       require => Class['redis::install'];
-      
-  }->
 
-  # startup script
-  file { "/etc/init.d/redis-sentinel_${sentinel_name}":
-    ensure  => file,
-    mode    => '0755',
-    content => template($sentinel_init_script),
-  }~>
+  }
+
+  if $systemd_os {
+
+    $service_provider = 'systemd'
+    $script_name = "/lib/systemd/system/redis-sentinel_${sentinel_name}.service"
+
+    file { $script_name :
+      ensure  => file,
+      mode    => '0755',
+      content => template('redis/etc/systemd/debian_redis-sentinel.service.erb'),
+      require => [
+        File["/etc/redis-sentinel_${sentinel_name}.conf"],
+      ],
+      notify  => Service["redis-sentinel_${sentinel_name}"],
+    }
+  } else {
+
+    $service_provider = 'init'
+    $script_name = "/etc/init.d/redis-sentinel_${sentinel_name}"
+
+    # startup script
+
+    file { $script_name :
+      ensure  => file,
+      mode    => '0755',
+      content => template($sentinel_init_script),
+      require => [
+        File["/etc/redis-sentinel_${sentinel_name}.conf"]
+      ],
+      notify  => [
+        Service["redis-sentinel_${sentinel_name}"]
+      ]
+    }
+  }
 
   # manage sentinel service
   service { "redis-sentinel_${sentinel_name}":
     ensure     => $running,
     enable     => $enabled,
+    provider   => $service_provider,
     hasstatus  => true,
     hasrestart => true,
+    require    => [
+      File[$script_name],
+    ],
   }
 
   # install and configure logrotate
