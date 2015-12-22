@@ -144,7 +144,6 @@ define redis::server (
   file { $conf_file:
       ensure  => file,
       content => template('redis/etc/redis.conf.erb'),
-      replace => $force_rewrite,
       require => Class['redis::install'];
   }
 
@@ -220,6 +219,6 @@ define redis::server (
     enable     => $enabled,
     hasstatus  => true,
     hasrestart => true,
-    require    => File["${service_file}"]
+    require    => File[$service_file]
   }
 }
