@@ -5,6 +5,8 @@
 #
 # [*sentinel_name*]
 #   Name of Sentinel instance. Default: call name of the function.
+# [*sentinel_ip*]
+#   Listen IP.
 # [*sentinel_port*]
 #   Listen port of Redis. Default: 26379
 # [*sentinel_log_dir*]
@@ -32,22 +34,22 @@
 #   Configure if Sentinel should be running or not. Default: true
 # [*enabled*]
 #   Configure if Sentinel is started at boot. Default: true
-# [*force_rewrite*]
+# [*sentinel_run_dir*]
 #
-#   Boolean. Default: `false`
+#   Default: `/var/run/redis`
 #
-#   Configure if the sentinels config is overwritten by puppet followed by a
-#   sentinel restart. Since sentinels automatically rewrite their config since
-#   version 2.8 setting this to `true` will trigger a sentinel restart on each puppet
-#   run with redis 2.8 or later.
+#   Since sentinels automatically rewrite their config since version 2.8 the puppet managed config will be copied
+#   to this directory and than sentinel will start with this copy.
 # [*manage_logrotate*]
 #   Configure logrotate rules for redis sentinel. Default: true
 define redis::sentinel (
   $ensure           = 'present',
   $sentinel_name    = $name,
+  $sentinel_ip      = undef,
   $sentinel_port    = 26379,
   $sentinel_log_dir = '/var/log',
   $sentinel_pid_dir = '/var/run',
+  $sentinel_run_dir = '/var/run/redis',
   $monitors         = {
     'mymaster' => {
       master_host             => '127.0.0.1',
@@ -64,12 +66,17 @@ define redis::sentinel (
   },
   $running          = true,
   $enabled          = true,
-  $force_rewrite    = false,
   $manage_logrotate = true,
 ) {
 
   # validate parameters
-  validate_bool($force_rewrite)
+  validate_absolute_path($sentinel_log_dir)
+  validate_absolute_path($sentinel_pid_dir)
+  validate_absolute_path($sentinel_run_dir)
+  validate_hash($monitors)
+  validate_bool($running)
+  validate_bool($enabled)
+  validate_bool($manage_logrotate)
   
   $redis_install_dir = $::redis::install::redis_install_dir
   $sentinel_init_script = $::operatingsystem ? {
@@ -79,21 +86,40 @@ define redis::sentinel (
   }
 
   # redis conf file
-  file {
-    "/etc/redis-sentinel_${sentinel_name}.conf":
+  $conf_file_name = "redis-sentinel_${sentinel_name}.conf"
+  $conf_file = "/etc/${conf_file_name}"
+  file { $conf_file:
       ensure  => file,
       content => template('redis/etc/sentinel.conf.erb'),
       replace => $force_rewrite,
       require => Class['redis::install'];
-      
-  }->
+  }
 
   # startup script
-  file { "/etc/init.d/redis-sentinel_${sentinel_name}":
-    ensure  => file,
-    mode    => '0755',
-    content => template($sentinel_init_script),
-  }~>
+  if ($::osfamily == 'RedHat' and versioncmp($::operatingsystemmajrelease, '7') >=0) {
+    $service_file = "/usr/lib/systemd/system/redis-sentinel_${sentinel_name}.service"
+    exec { "systemd_service_${sentinel_name}_preset":
+      command => "/bin/systemctl preset redis-sentinel_${sentinel_name}.service",
+      notify  => Service["redis-sentinel_${sentinel_name}"],
+    }
+
+    file { $service_file:
+      ensure  => file,
+      mode    => '0755',
+      content => template('redis/systemd/sentinel.service.erb'),
+      require => File["/etc/redis-sentinel_${sentinel_name}.conf"],
+      notify  => Exec["systemd_service_${sentinel_name}_preset"],
+    }
+  } else {
+    $service_file = "/etc/init.d/redis-sentinel_${sentinel_name}"
+    file { $service_file:
+      ensure  => file,
+      mode    => '0755',
+      content => template($sentinel_init_script),
+      require => File["/etc/redis-sentinel_${sentinel_name}.conf"],
+      notify  => Service["redis-sentinel_${sentinel_name}"],
+    }
+  }
 
   # manage sentinel service
   service { "redis-sentinel_${sentinel_name}":

@@ -24,14 +24,17 @@ pidfile="<%= @sentinel_pid_dir %>/redis-sentinel_<%= @sentinel_name %>.pid"
 logfile="<%= @sentinel_log_dir -%>/redis-sentinel_<%= @sentinel_name %>.log"
 
 SENTINEL_CONF_FILE="/etc/redis-sentinel_<%= @sentinel_name %>.conf"
+RUNTIME_CONF_FILE="<%= @sentinel_run_dir %>/redis-sentinel_<%= @sentinel_name %>.conf"
 
 lockfile="/var/lock/subsys/redis-sentinel_<%= @sentinel_name %>"
 
 start() {
     [ -x $sentinel ] || exit 5
     [ -f $SENTINEL_CONF_FILE ] || exit 6
+    [ -d <%= @sentinel_run_dir %> ] || mkdir -p <%= @sentinel_run_dir %>
     echo -n $"Starting $prog: "
-    daemon $sentinel $SENTINEL_CONF_FILE --pidfile $pidfile
+    cp -u $SENTINEL_CONF_FILE $RUNTIME_CONF_FILE
+    daemon $sentinel $RUNTIME_CONF_FILE --pidfile $pidfile
     retval=$?
     echo
     [ $retval -eq 0 ] && touch $lockfile

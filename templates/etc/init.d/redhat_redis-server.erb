@@ -23,6 +23,7 @@ prog="redis_<%= @redis_name %>"
 pidfile="<%= @redis_pid_dir %>/redis_<%= @redis_name %>.pid"
 
 REDIS_CONF_FILE="/etc/redis_<%= @redis_name %>.conf"
+RUNTIME_CONF_FILE="<%= @redis_run_dir %>/redis_<%= @redis_name %>.conf"
 
 #[ -f /etc/sysconfig/redis ] && . /etc/sysconfig/redis
 
@@ -31,8 +32,10 @@ lockfile="/var/lock/subsys/redis_<%= @redis_name %>"
 start() {
     [ -x $redis ] || exit 5
     [ -f $REDIS_CONF_FILE ] || exit 6
+    [ -d <%= @redis_pid_dir %> ] || mkdir -p <%= @redis_pid_dir %>
     echo -n $"Starting $prog: "
-    daemon $redis $REDIS_CONF_FILE
+    cp -u $REDIS_CONF_FILE $RUNTIME_CONF_FILE
+    daemon $redis $RUNTIME_CONF_FILE
     retval=$?
     echo
     [ $retval -eq 0 ] && touch $lockfile
