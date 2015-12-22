@@ -14,9 +14,13 @@
 #
 # units are case insensitive so 1GB 1Gb 1gB are all the same.
 
+<% if @osfamily == 'RedHat' and scope.function_versioncmp([@operatingsystemmajrelease, '7']) >= 0 -%>
+daemonize no
+<% else -%>
 # By default Redis does not run as a daemon. Use 'yes' if you need it.
 # Note that Redis will write a pid file in <%= @redis_pid_dir %>/redis_<%= @redis_name %>.pid when daemonized.
 daemonize yes
+<% end -%>
 
 # When running daemonized, Redis writes a pid file in <%= @redis_pid_dir %>/redis.pid by
 # default. You can specify a custom pid file location here.
