@@ -5,6 +5,8 @@
 #
 # [*sentinel_name*]
 #   Name of Sentinel instance. Default: call name of the function.
+# [*sentinel_ip*]
+#   Listen IP.
 # [*sentinel_port*]
 #   Listen port of Redis. Default: 26379
 # [*sentinel_log_dir*]
@@ -43,6 +45,7 @@
 define redis::sentinel (
   $ensure           = 'present',
   $sentinel_name    = $name,
+  $sentinel_ip      = undef,
   $sentinel_port    = 26379,
   $sentinel_log_dir = '/var/log',
   $sentinel_pid_dir = '/var/run',
