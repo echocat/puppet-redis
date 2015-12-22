@@ -1,0 +1,14 @@
+[Unit]
+Description=Redis Sentinel
+After=network.target
+
+[Service]
+ExecStartPre=/bin/cp -u <%= @conf_file %> <%= @sentinel_run_dir %>/<%= @conf_file_name %>
+ExecStart=/usr/bin/redis-sentinel  <%= @sentinel_run_dir %>/<%= @conf_file_name %> --daemonize no
+ExecStop=/usr/bin/redis-shutdown redis-sentinel_<%= @sentinel_name %>
+User=redis
+Group=redis
+
+[Install]
+WantedBy=multi-user.target
+
