@@ -91,7 +91,6 @@ define redis::sentinel (
   file { $conf_file:
       ensure  => file,
       content => template('redis/etc/sentinel.conf.erb'),
-      replace => $force_rewrite,
       require => Class['redis::install'];
   }
 
@@ -144,5 +143,4 @@ define redis::sentinel (
       ]
     }
   }
-
 }
