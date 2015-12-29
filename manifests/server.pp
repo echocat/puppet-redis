@@ -153,6 +153,7 @@ define redis::server (
     exec { "systemd_service_${redis_name}_preset":
       command => "/bin/systemctl preset redis-server_${redis_name}.service",
       notify  => Service["redis-server_${redis_name}"],
+      refreshonly => true,
     }
 
     file { $service_file:
@@ -160,7 +161,7 @@ define redis::server (
       mode    => '0755',
       content => template('redis/systemd/redis.service.erb'),
       require => [
-        File["/etc/redis_${redis_name}.conf"],
+        File[$conf_file],
         File["${redis_dir}/redis_${redis_name}"]
       ],
       notify  => Exec["systemd_service_${redis_name}_preset"],
@@ -172,7 +173,7 @@ define redis::server (
       mode    => '0755',
       content => template($redis_init_script),
       require => [
-        File["/etc/redis_${redis_name}.conf"],
+        File[$conf_file],
         File["${redis_dir}/redis_${redis_name}"]
       ],
       notify  => Service["redis-server_${redis_name}"],
@@ -208,7 +209,7 @@ define redis::server (
       content => template('redis/redis_logrotate.conf.erb'),
       require => [
         Package['logrotate'],
-        File["/etc/redis_${redis_name}.conf"],
+        File[$conf_file],
       ]
     }
   }
@@ -219,6 +220,7 @@ define redis::server (
     enable     => $enabled,
     hasstatus  => true,
     hasrestart => true,
-    require    => File[$service_file]
+    require    => File[$service_file],
+    subscribe  => File[$conf_file],
   }
 }
