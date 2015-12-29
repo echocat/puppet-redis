@@ -151,8 +151,8 @@ define redis::server (
   if ($::osfamily == 'RedHat' and versioncmp($::operatingsystemmajrelease, '7') >=0) {
     $service_file = "/usr/lib/systemd/system/redis-server_${redis_name}.service"
     exec { "systemd_service_${redis_name}_preset":
-      command => "/bin/systemctl preset redis-server_${redis_name}.service",
-      notify  => Service["redis-server_${redis_name}"],
+      command     => "/bin/systemctl preset redis-server_${redis_name}.service",
+      notify      => Service["redis-server_${redis_name}"],
       refreshonly => true,
     }
 

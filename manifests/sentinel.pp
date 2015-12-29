@@ -98,8 +98,8 @@ define redis::sentinel (
   if ($::osfamily == 'RedHat' and versioncmp($::operatingsystemmajrelease, '7') >=0) {
     $service_file = "/usr/lib/systemd/system/redis-sentinel_${sentinel_name}.service"
     exec { "systemd_service_${sentinel_name}_preset":
-      command => "/bin/systemctl preset redis-sentinel_${sentinel_name}.service",
-      notify  => Service["redis-sentinel_${sentinel_name}"],
+      command     => "/bin/systemctl preset redis-sentinel_${sentinel_name}.service",
+      notify      => Service["redis-sentinel_${sentinel_name}"],
       refreshonly => true,
     }
 
@@ -127,7 +127,7 @@ define redis::sentinel (
     enable     => $enabled,
     hasstatus  => true,
     hasrestart => true,
-    subscribe => File[$conf_file],
+    subscribe  => File[$conf_file],
   }
 
   if ($manage_logrotate == true){
