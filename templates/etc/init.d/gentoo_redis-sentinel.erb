@@ -1,0 +1,34 @@
+#!/sbin/runscript
+# $Id$
+
+SENTINEL_DIR="/var/lib/redis"
+SENTINEL_CONF="/etc/redis-sentinel_<%= @sentinel_name %>.conf"
+SENTINEL_USER="root"
+SENTINEL_GROUP="root"
+SENTINEL_TIMEOUT=30
+SENTINEL_PID="<%= @sentinel_pid_dir %>/redis-sentinel_<%= @sentinel_name %>.pid"
+
+command="<%= @redis_install_dir %>/redis-server"
+pidfile="${SENTINEL_PID}"
+
+start_stop_daemon_args="--background --pidfile ${SENTINEL_PID}
+        --chdir \"${SENTINEL_DIR}\" --user ${SENTINEL_USER} --group ${SENTINEL_GROUP}"
+command_args="${SENTINEL_CONF} --sentinel"
+
+depend() {
+        use net localmount logger
+        after keepalived
+}
+
+start_pre() {
+        checkpath -d -m 0775 -o ${SENTINEL_USER}:${SENTINEL_GROUP} $(dirname ${SENTINEL_PID})
+}
+
+stop() {
+        ebegin "Stopping ${SVCNAME}"
+        start-stop-daemon --stop \
+                --exec ${command} \
+                --retry ${SENTINEL_TIMEOUT} \
+                --pidfile ${SENTINEL_PID}
+        eend
+}

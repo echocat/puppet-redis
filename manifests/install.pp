@@ -48,6 +48,9 @@ class redis::install (
           }
         }
       }
+      'Gentoo': {
+        package { 'dev-db/redis' : ensure => $redis_version, }
+      }
       default: {
         fail('The module does not support this OS.')
       }
