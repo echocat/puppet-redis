@@ -1,0 +1,34 @@
+#!/sbin/runscript
+# $Id$
+
+REDIS_DIR="<%= @redis_dir %>/redis_<%= @redis_name %>"
+REDIS_CONF="/etc/redis_<%= @redis_name %>.conf"
+REDIS_USER=<%= @redis_user %>
+REDIS_GROUP=<%= @redis_group %>
+REDIS_TIMEOUT=30
+REDIS_PID="<%= @redis_pid_dir %>/redis_<%= @redis_name %>.pid"
+
+command="<%= @redis_install_dir %>/redis-server"
+pidfile="${REDIS_PID}"
+
+start_stop_daemon_args="--background --pidfile ${REDIS_PID}
+        --chdir \"${REDIS_DIR}\" --user ${REDIS_USER} --group ${REDIS_GROUP}"
+command_args="${REDIS_CONF}"
+
+depend() {
+        use net localmount logger
+        after keepalived
+}
+
+start_pre() {
+        checkpath -d -m 0775 -o ${REDIS_USER}:${REDIS_GROUP} $(dirname ${REDIS_PID})
+}
+
+stop() {
+        ebegin "Stopping ${SVCNAME}"
+        start-stop-daemon --stop \
+                --exec ${command} \
+                --retry ${REDIS_TIMEOUT} \
+                --pidfile ${REDIS_PID}
+        eend
+}
