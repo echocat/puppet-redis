@@ -143,7 +143,8 @@ define redis::server (
       ensure  => file,
       content => template('redis/etc/redis.conf.erb'),
       replace => $force_rewrite,
-      require => Class['redis::install'];
+      require => Class['redis::install'],
+      notify  => Service["redis-server_${redis_name}"],
   }
 
   # startup script
