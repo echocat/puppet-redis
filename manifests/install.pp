@@ -20,6 +20,9 @@
 # [*redis_group*]
 #   The redis system group. Default value is 'undef', which results to 'root' as system group.
 #
+# [*download_base*]
+#   Url where to find the source tar.gz. Default value is 'http://download.redis.io/releases'
+#
 class redis::install (
   $redis_version     = $::redis::params::redis_version,
   $redis_build_dir   = $::redis::params::redis_build_dir,
@@ -28,6 +31,7 @@ class redis::install (
   $download_tool     = $::redis::params::download_tool,
   $redis_user        = $::redis::params::redis_user,
   $redis_group       = $::redis::params::redis_group,
+  $download_base     = $::redis::params::download_base,
 ) inherits redis {
   if ( $redis_package == true ) {
     case $::operatingsystem {
@@ -90,11 +94,7 @@ class redis::install (
       ensure => directory,
     }
 
-    if $redis_version == $::redis::params::redis_version {
-      $redis_download_url = 'http://download.redis.io/redis-stable.tar.gz'
-    } else {
-      $redis_download_url = "http://download.redis.io/releases/redis-${redis_version}.tar.gz"
-    }
+    $redis_download_url = "${download_base}/redis-${redis_version}.tar.gz"
 
     exec { "Download and untar redis ${redis_version}":
       require => File[$redis_build_dir],

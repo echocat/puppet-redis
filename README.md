@@ -232,6 +232,11 @@ the redis install package. Therefor, these values must be adjusted too.
 Redis system group. Default: undef (string)
 Default 'undef' results to 'root' as redis system group
 
+#####`download_base`
+
+Url where to find the source tar.gz. 
+Default value is 'http://download.redis.io/releases'
+
 ####Defined Type: `redis::server`
 
 Used to configure redis instances. You can setup multiple redis servers on the
