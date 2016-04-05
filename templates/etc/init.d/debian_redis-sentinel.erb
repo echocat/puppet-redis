@@ -16,6 +16,7 @@ REDIS_NAME="redis-sentinel_<%= @sentinel_name %>"
 REDIS_PID="<%= @sentinel_pid_dir %>/redis-sentinel_<%= @sentinel_name %>.pid"
 REDIS_LOCKFILE="/var/lock/redis-sentinel_<%= @sentinel_name %>"
 REDIS_CONF_FILE="/etc/redis-sentinel_<%= @sentinel_name %>.conf"
+RUNTIME_CONF_FILE="<%= @sentinel_run_dir %>/redis-sentinel_<%= @sentinel_name %>.conf"
 
 [ -x "$REDIS_EXEC" ] || exit 5
 
@@ -23,9 +24,11 @@ start() {
     local retval
 
     [ -f "$REDIS_CONF_FILE" ] || exit 6
+    [ -d <%= @sentinel_run_dir %> ] mkdir -p <%= @sentinel_run_dir %>
+    cp -u $REDIS_CONF_FILE $RUNTIME_CONF_FILE
 
     log_daemon_msg "Starting $REDIS_NAME"
-    start-stop-daemon --start --quiet --pidfile "$REDIS_PID" --retry 5 --exec "$REDIS_EXEC" --oknodo -- "$REDIS_CONF_FILE"
+    start-stop-daemon --start --quiet --pidfile "$REDIS_PID" --retry 5 --exec "$REDIS_EXEC" --oknodo -- "$RUNTIME_CONF_FILE"
 
     retval=$?
     log_end_msg $retval
