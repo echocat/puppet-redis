@@ -8,4 +8,5 @@ class redis::params {
   $download_tool         = 'curl -s -L'
   $redis_user            = undef
   $redis_group           = undef
+  $redis_download_base	 = 'http://download.redis.io'
 }
