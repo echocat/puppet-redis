@@ -416,9 +416,13 @@ Name of Redis instance. Default: call name of the function.
 The name is used to create the init script(s), which follows the pattern
 `redis-sentinel_${sentinel_name}`
 
+#####`sentinel_ip`
+
+Listen IP of sentinel. Default: 6379
+
 #####`sentinel_port`
 
-Listen port of Redis. Default: 6379
+Listen port of sentinel. Default: 6379
 
 #####`sentinel_log_dir`
 
@@ -430,6 +434,11 @@ Path for log. Full log path is `sentinel_log_dir`/sentinel_`sentinel_name`.log.
 Default is '/var/run' (string).
 Path for pid file. Full pid file path is `sentinel_pid_dir`/sentinel_`sentinel_name`.pid.
 
+#####`sentinel_run_dir`
+
+Default: `/var/run/redis` (string)
+Since sentinels automatically rewrite their config since version 2.8 the puppet managed config will be copied
+to this directory and than sentinel will start with this copy.
 
 #####`monitors`
 

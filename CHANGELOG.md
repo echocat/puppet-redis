@@ -1,3 +1,17 @@
+## 2016-04-05 - 1.8.0 (Feature/Bugfix release)
+
+#### Features:
+
+- (e37283e) Add the possibility to exclude logrotate
+- (316f492) RedHat 7: add systemd support
+- (316f492) Sentinel: add parameter `sentinel_ip` for binding address
+- (3fdbca0) Server::install: add parameter `download_base` at install class to specify download url of source tar.gz
+- (e47fc28) Gentoo: add support for Gentoo
+
+#### Bugfixes:
+
+- (6dea873) fix source entry for forge api in metadata.json
+
 ## 2015-12-02 - 1.7.0 (Feature/Bugfix release)
 
 #### Features:
