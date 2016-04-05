@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'redis::install' do
 
   context 'Unsupported OS' do
-    let(:facts) {{ :osfamily => 'unsupported' }}
+    let(:facts) {{ :osfamily => 'unsupported', :operatingsystem => 'UnknownOS' }}
     it { expect { should contain_class('redis::install')}.to raise_error(Puppet::Error, /The module does not support this OS/ )}
   end
 
