@@ -28,6 +28,7 @@ class redis::install (
   $download_tool     = $::redis::params::download_tool,
   $redis_user        = $::redis::params::redis_user,
   $redis_group       = $::redis::params::redis_group,
+  $redis_download_base  = $::redis::params::redis_download_base,
 ) inherits redis {
   if ( $redis_package == true ) {
     case $::operatingsystem {
@@ -87,11 +88,7 @@ class redis::install (
       ensure => directory,
     }
 
-    if $redis_version == $::redis::params::redis_version {
-      $redis_download_url = 'http://download.redis.io/redis-stable.tar.gz'
-    } else {
-      $redis_download_url = "http://download.redis.io/releases/redis-${redis_version}.tar.gz"
-    }
+    $redis_download_url = "${redis_download_base}/redis-${redis_version}.tar.gz"
 
     exec { "Download and untar redis ${redis_version}":
       require => File[$redis_build_dir],
