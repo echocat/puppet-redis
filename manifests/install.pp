@@ -88,7 +88,7 @@ class redis::install (
       ensure => directory,
     }
 
-    $redis_download_url = "${redis_download_base}/releases/redis-${redis_version}.tar.gz"
+    $redis_download_url = "${redis_download_base}/redis-${redis_version}.tar.gz"
 
     exec { "Download and untar redis ${redis_version}":
       require => File[$redis_build_dir],
