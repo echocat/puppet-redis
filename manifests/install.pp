@@ -83,7 +83,7 @@ class redis::install (
     exec { "Make dir ${redis_build_dir}":
       command => "mkdir -p ${redis_build_dir}",
       creates => $redis_build_dir,
-      path    => $::path,
+      path    => ['/usr/bin', '/usr/sbin', '/bin', '/sbin'],
       cwd     => '/',
       user    => 'root',
       group   => 'root',
@@ -101,7 +101,7 @@ class redis::install (
       before  => Anchor['redis::prepare_build'],
       command => "${download_tool} ${redis_download_url} | tar xz",
       creates => "${redis_build_dir}/redis-${::redis::install::redis_version}",
-      path    => $::path,
+      path    => ['/usr/bin', '/usr/sbin', '/bin', '/sbin'],
       cwd     => $redis_build_dir,
       user    => 'root',
       group   => 'root',
@@ -116,7 +116,7 @@ class redis::install (
       command => 'make',
       creates => "${redis_build_dir}/redis-${redis_version}/src/redis-server",
       cwd     => "${redis_build_dir}/redis-${::redis::install::redis_version}/",
-      path    => $::path,
+      path    => ['/usr/bin', '/usr/sbin', '/bin', '/sbin'],
       user    => 'root',
       group   => 'root',
     }
