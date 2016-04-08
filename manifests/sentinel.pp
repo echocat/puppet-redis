@@ -68,6 +68,8 @@ define redis::sentinel (
   $enabled          = true,
   $manage_logrotate = true,
 ) {
+  $sentinel_user              = $::redis::install::redis_user
+  $sentinel_group             = $::redis::install::redis_group
 
   # validate parameters
   validate_absolute_path($sentinel_log_dir)
