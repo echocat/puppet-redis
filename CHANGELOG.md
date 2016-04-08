@@ -1,3 +1,9 @@
+## 2016-04-08 - 1.8.1 (Bugfix release)
+
+#### Bugfixes:
+
+- (318d2cb) RedHat 7: fix systemd scripts for Server and Sentinel 
+
 ## 2016-04-05 - 1.8.0 (Feature/Bugfix release)
 
 #### Features:
