@@ -67,7 +67,7 @@ class redis::install (
         ensure_packages('build-essential')
         Package['build-essential'] -> Anchor['redis::prepare_build']
       }
-      'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon', 'Scientific': {
+      'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon', 'Scientific', 'Sles': {
         ensure_packages('make')
         Package['make'] -> Anchor['redis::prepare_build']
         ensure_packages('gcc')
