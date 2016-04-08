@@ -159,7 +159,7 @@ define redis::server (
 
     file { $service_file:
       ensure  => file,
-      mode    => '0755',
+      mode    => '0644',
       content => template('redis/systemd/redis.service.erb'),
       require => [
         File[$conf_file],
