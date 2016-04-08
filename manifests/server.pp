@@ -76,15 +76,16 @@
 # [*hash_max_ziplist_value*]
 #   Threshold for ziplist value. Default: 64
 #
-# [*force_rewrite*]
+# [*redis_run_dir*]
 #
-#   Boolean. Default: `false`
+#   Default: `/var/run/redis`
 #
-#   Configure if the redis config is overwritten by puppet followed by a
-#   redis restart. Since redis automatically rewrite their config since
-#   version 2.8 setting this to `true` will trigger a sentinel restart on each puppet
-#   run with redis 2.8 or later.
+#   Since redis automatically rewrite their config since version 2.8 what conflicts with puppet
+#   the config files created by puppet will be copied to this directory and redis will be started from
+#   this copy.
 #
+# [*manage_logrotate*]
+#   Configure logrotate rules for redis server. Default: true
 define redis::server (
   $redis_name              = $name,
   $redis_memory            = '100mb',
@@ -101,6 +102,7 @@ define redis::server (
   $redis_dir               = '/var/lib',
   $redis_log_dir           = '/var/log',
   $redis_pid_dir           = '/var/run',
+  $redis_run_dir           = '/var/run/redis',
   $redis_loglevel          = 'notice',
   $redis_appedfsync        = 'everysec',
   $running                 = true,
@@ -123,7 +125,7 @@ define redis::server (
   $save                    = [],
   $hash_max_ziplist_entries = 512,
   $hash_max_ziplist_value  = 64,
-  $force_rewrite           = false,
+  $manage_logrotate        = true,
 ) {
   $redis_user              = $::redis::install::redis_user
   $redis_group             = $::redis::install::redis_group
@@ -133,29 +135,51 @@ define redis::server (
     /(Debian|Ubuntu)/                                          => 'redis/etc/init.d/debian_redis-server.erb',
     /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon|Scientific)/ => 'redis/etc/init.d/redhat_redis-server.erb',
     /(SLES)/                                                   => 'redis/etc/init.d/sles_redis-server.erb',
-    default                                                    => UNDEF,
+    /(Gentoo)/                                                 => 'redis/etc/init.d/gentoo_redis-server.erb',
+    default                                                    => undef,
   }
   $redis_2_6_or_greater = versioncmp($::redis::install::redis_version,'2.6') >= 0
 
   # redis conf file
-  file {
-    "/etc/redis_${redis_name}.conf":
+  $conf_file_name = "redis_${redis_name}.conf"
+  $conf_file = "/etc/${conf_file_name}"
+  file { $conf_file:
       ensure  => file,
       content => template('redis/etc/redis.conf.erb'),
-      replace => $force_rewrite,
       require => Class['redis::install'];
   }
 
   # startup script
-  file { "/etc/init.d/redis-server_${redis_name}":
-    ensure  => file,
-    mode    => '0755',
-    content => template($redis_init_script),
-    require => [
-      File["/etc/redis_${redis_name}.conf"],
-      File["${redis_dir}/redis_${redis_name}"]
-    ],
-    notify  => Service["redis-server_${redis_name}"],
+  if ($::osfamily == 'RedHat' and versioncmp($::operatingsystemmajrelease, '7') >=0) {
+    $service_file = "/usr/lib/systemd/system/redis-server_${redis_name}.service"
+    exec { "systemd_service_${redis_name}_preset":
+      command     => "/bin/systemctl preset redis-server_${redis_name}.service",
+      notify      => Service["redis-server_${redis_name}"],
+      refreshonly => true,
+    }
+
+    file { $service_file:
+      ensure  => file,
+      mode    => '0644',
+      content => template('redis/systemd/redis.service.erb'),
+      require => [
+        File[$conf_file],
+        File["${redis_dir}/redis_${redis_name}"]
+      ],
+      notify  => Exec["systemd_service_${redis_name}_preset"],
+    }
+  } else {
+    $service_file = "/etc/init.d/redis-server_${redis_name}"
+    file { $service_file:
+      ensure  => file,
+      mode    => '0755',
+      content => template($redis_init_script),
+      require => [
+        File[$conf_file],
+        File["${redis_dir}/redis_${redis_name}"]
+      ],
+      notify  => Service["redis-server_${redis_name}"],
+    }
   }
 
   # path for persistent data
@@ -176,18 +200,20 @@ define redis::server (
     group   => $redis_group,
   }
 
-  # install and configure logrotate
-  if ! defined(Package['logrotate']) {
-    package { 'logrotate': ensure => installed; }
-  }
+  if ($manage_logrotate == true){
+    # install and configure logrotate
+    if ! defined(Package['logrotate']) {
+      package { 'logrotate': ensure => installed; }
+    }
 
-  file { "/etc/logrotate.d/redis-server_${redis_name}":
-    ensure  => file,
-    content => template('redis/redis_logrotate.conf.erb'),
-    require => [
-      Package['logrotate'],
-      File["/etc/redis_${redis_name}.conf"],
-    ]
+    file { "/etc/logrotate.d/redis-server_${redis_name}":
+      ensure  => file,
+      content => template('redis/redis_logrotate.conf.erb'),
+      require => [
+        Package['logrotate'],
+        File[$conf_file],
+      ]
+    }
   }
 
   # manage redis service
@@ -196,6 +222,7 @@ define redis::server (
     enable     => $enabled,
     hasstatus  => true,
     hasrestart => true,
-    require    => File["/etc/init.d/redis-server_${redis_name}"]
+    require    => File[$service_file],
+    subscribe  => File[$conf_file],
   }
 }

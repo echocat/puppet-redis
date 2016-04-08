@@ -16,6 +16,7 @@ REDIS_NAME="redis-server_<%= @redis_name %>"
 REDIS_PID="<%= @redis_pid_dir %>/redis_<%= @redis_name %>.pid"
 REDIS_LOCKFILE="/var/lock/redis_<%= @redis_name %>"
 REDIS_CONF_FILE="/etc/redis_<%= @redis_name %>.conf"
+RUNTIME_CONF_FILE="<%= @redis_run_dir %>/redis_<%= @redis_name %>.conf"
 
 [ -x "$REDIS_EXEC" ] || exit 5
 
@@ -23,9 +24,11 @@ start() {
     local retval
 
     [ -f "$REDIS_CONF_FILE" ] || exit 6
+    [ -d <%= @redis_run_dir %> ] ||mkdir -p <%= @redis_run_dir %>
 
     log_daemon_msg "Starting $REDIS_NAME"
-    start-stop-daemon --start --quiet --pidfile "$REDIS_PID" --retry 5 --exec "$REDIS_EXEC" --oknodo -- "$REDIS_CONF_FILE"
+    cp -u $REDIS_CONF_FILE $RUNTIME_CONF_FILE
+    start-stop-daemon --start --quiet --pidfile "$REDIS_PID" --retry 5 --exec "$REDIS_EXEC" --oknodo -- "$RUNTIME_CONF_FILE"
 
     retval=$?
     log_end_msg $retval
