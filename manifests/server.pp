@@ -83,7 +83,7 @@
 #   Since redis automatically rewrite their config since version 2.8 what conflicts with puppet
 #   the config files created by puppet will be copied to this directory and redis will be started from
 #   this copy.
-#   
+#
 # [*manage_logrotate*]
 #   Configure logrotate rules for redis server. Default: true
 define redis::server (
@@ -136,12 +136,13 @@ define redis::server (
     /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon|Scientific)/ => 'redis/etc/init.d/redhat_redis-server.erb',
     /(SLES)/                                                   => 'redis/etc/init.d/sles_redis-server.erb',
     /(Gentoo)/                                                 => 'redis/etc/init.d/gentoo_redis-server.erb',
-    default                                                    => UNDEF,
+    default                                                    => undef,
   }
   $redis_2_6_or_greater = versioncmp($::redis::install::redis_version,'2.6') >= 0
 
   # redis conf file
-  $conf_file = "/etc/redis_${redis_name}.conf"
+  $conf_file_name = "redis_${redis_name}.conf"
+  $conf_file = "/etc/${conf_file_name}"
   file { $conf_file:
       ensure  => file,
       content => template('redis/etc/redis.conf.erb'),

@@ -83,7 +83,7 @@ define redis::sentinel (
     /(Debian|Ubuntu)/                                          => 'redis/etc/init.d/debian_redis-sentinel.erb',
     /(Fedora|RedHat|CentOS|OEL|OracleLinux|Amazon|Scientific)/ => 'redis/etc/init.d/redhat_redis-sentinel.erb',
     /(Gentoo)/                                                 => 'redis/etc/init.d/gentoo_redis-sentinel.erb',
-    default                                                    => UNDEF,
+    default                                                    => undef,
   }
 
   # redis conf file
