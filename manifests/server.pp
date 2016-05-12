@@ -126,6 +126,12 @@ define redis::server (
   $hash_max_ziplist_entries = 512,
   $hash_max_ziplist_value  = 64,
   $manage_logrotate        = true,
+  $cluster_enabled         = false,
+  $cluster_node_timeout          = undef,
+  $cluster_slave_validity_factor = undef,
+  $cluster_migration_barrier     = undef,
+  $cluster_require_full_coverage = true,
+  
 ) {
   $redis_user              = $::redis::install::redis_user
   $redis_group             = $::redis::install::redis_group
