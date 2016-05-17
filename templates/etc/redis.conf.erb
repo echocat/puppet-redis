@@ -403,6 +403,7 @@ auto-aof-rewrite-min-size <%= @aof_rewrite_minsize %>
 # Set it to 0 or a negative value for unlimited execution without warnings.
 #lua-time-limit 5000
 
+<% if @redis_with_cluster_support -%>
 ################################ REDIS CLUSTER  ###############################
 #
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -521,6 +522,7 @@ cluster-migration-barrier <%= @cluster_migration_barrier %>
 # In order to setup your cluster make sure to read the documentation
 # available at http://redis.io web site.
 
+<% end -%>
 ################################## SLOW LOG ###################################
 
 # The Redis Slow Log is a system to log queries that exceeded a specified
