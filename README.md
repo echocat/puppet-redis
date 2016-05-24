@@ -6,6 +6,7 @@
 2. [Setup - The basics of getting started with redis](#setup)
     * [Beginning with redis - Installation](#beginning-with-redis)
     * [Run multiple instances on same host](#run-multiple-instances-on-same-host)
+    * [Create a cluster-enabled instance](#Create a cluster-enable instance)
     * [Setting up sentinel with two monitors](#setting-up-sentinel-with-two-monitors)
 3. [Usage - The class and defined types available for configuration](#usage)
     * [Classes and Defined Types](#classes-and-defined-types)
@@ -135,6 +136,36 @@ node 'redis-slave.my.domain' {
       requirepass     => 'some_really_long_random_password',
       slaveof         => 'redis-master.my.domain 6379',
       masterauth      => 'some_really_long_random_password',
+  }
+}
+```
+
+###Create a cluster-enable instance
+
+Please note that right now you can only create cluster-enabled instances
+but you cannot configure a Redis Cluster only with this module. You should
+still use `redis-trib.rb` from Redis source distribution or configure it
+by hand with redis cluster commands. Moreover, the cluster mode will be enabled 
+only for Redis >= 3.0
+
+A simple example of a cluster-enabled instance, with a timeout of 5 seconds to
+detect if another node is dead.
+
+```puppet
+node 'redis-cluster.my.domain' {
+
+  # install latest stable build.
+  class { 'redis::install': }
+
+  redis::server {
+    'cluster-instance':
+      redis_memory         => '1g',
+      redis_ip             => '0.0.0.0',
+      redis_port           => 6379,
+      running              => true,
+      enabled              => true,
+      cluster_enabled      => true,
+      cluster_node_timeout => '5000',
   }
 }
 ```
@@ -401,6 +432,28 @@ Configure Redis slave replication timeout in seconds. Default: 60 (number)
 #####`repl_ping_slave_period`
 
 Configure Redis replication ping slave period in seconds. Default: 10 (number)
+
+##### Cluster Options
+
+#####`cluster_enabled`
+
+Enable Redis Cluster. Supported only in Redis 3.x. Default: false
+
+#####`cluster_node_timeout`
+
+Timeout in ms to declare a node as failed.
+
+#####`cluster_slave_validity_factor`
+
+Configure slave validity factor. Please read the Redis documentation to learn more about this parameter.
+
+#####`cluster_migration_barrier`
+
+Slaves migrate to orphaned masters only if there are still at least this given number of other working slaves for their old master.
+
+#####`cluster_require_full_coverage`
+
+By default Redis Cluster nodes stop accepting queries if they detect there is at least an hash slot uncovered.
 
 ####Defined Type: `redis::sentinel`
 
