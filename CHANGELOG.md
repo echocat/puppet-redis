@@ -1,3 +1,13 @@
+## 2016-06-24 - 1.9.0 (Feature/Bugfix release)
+
+#### Bugfixes:
+
+- (734defe) redis-check-dump was renamed to redis-check-rdb in redis version 3.2
+
+#### Features:
+
+- (123f474) Add initial cluster support to redis::server
+
 ## 2016-04-08 - 1.8.1 (Bugfix release)
 
 #### Bugfixes:

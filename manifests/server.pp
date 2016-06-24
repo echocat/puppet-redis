@@ -86,6 +86,25 @@
 #
 # [*manage_logrotate*]
 #   Configure logrotate rules for redis server. Default: true
+#
+# [*cluster_enabled*]
+#   Enable Redis Cluster. Supported only in Redis 3.x. Default: false
+#
+# [*cluster_node_timeout*]
+#   Timeout in ms to declare a node as failed.
+#
+# [*cluster_slave_validity_factor*]
+#   Configure slave validity factor. Please read the Redis documentation to learn more
+#   about this parameter.
+#
+# [*cluster_migration_barrier*]
+#   Slaves migrate to orphaned masters only if there are still at least this
+#   given number of other working slaves for their old master.
+#
+# [*cluster_require_full_coverage*]
+#   By default Redis Cluster nodes stop accepting queries if they detect there
+#   is at least an hash slot uncovered.
+
 define redis::server (
   $redis_name              = $name,
   $redis_memory            = '100mb',
@@ -126,6 +145,11 @@ define redis::server (
   $hash_max_ziplist_entries = 512,
   $hash_max_ziplist_value  = 64,
   $manage_logrotate        = true,
+  $cluster_enabled         = false,
+  $cluster_node_timeout          = undef,
+  $cluster_slave_validity_factor = undef,
+  $cluster_migration_barrier     = undef,
+  $cluster_require_full_coverage = true,
 ) {
   $redis_user              = $::redis::install::redis_user
   $redis_group             = $::redis::install::redis_group
@@ -139,6 +163,7 @@ define redis::server (
     default                                                    => undef,
   }
   $redis_2_6_or_greater = versioncmp($::redis::install::redis_version,'2.6') >= 0
+  $redis_with_cluster_support = versioncmp($::redis::install::redis_version,'3.0') >= 0
 
   # redis conf file
   $conf_file_name = "redis_${redis_name}.conf"
