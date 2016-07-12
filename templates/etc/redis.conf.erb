@@ -645,3 +645,7 @@ activerehashing yes
 #
 # include /path/to/local.conf
 # include /path/to/other.conf
+<% @include.each do |config| %>
+include <%= config %>
+<% end %>
+
