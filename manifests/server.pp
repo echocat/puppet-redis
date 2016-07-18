@@ -175,7 +175,7 @@ define redis::server (
   }
 
   # startup script
-  if ($::osfamily == 'RedHat' and versioncmp($::operatingsystemmajrelease, '7') >=0) {
+  if ($::osfamily == 'RedHat' and versioncmp($::operatingsystemmajrelease, '7') >=0 and $::operatingsystem != 'Amazon') {
     $service_file = "/usr/lib/systemd/system/redis-server_${redis_name}.service"
     exec { "systemd_service_${redis_name}_preset":
       command     => "/bin/systemctl preset redis-server_${redis_name}.service",
