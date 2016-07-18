@@ -14,7 +14,7 @@
 #
 # units are case insensitive so 1GB 1Gb 1gB are all the same.
 
-<% if @osfamily == 'RedHat' and scope.function_versioncmp([@operatingsystemmajrelease, '7']) >= 0 -%>
+<% if @osfamily == 'RedHat' and scope.function_versioncmp([@operatingsystemmajrelease, '7']) >= 0 and @operatingsystem != 'Amazon' -%>
 daemonize no
 <% else -%>
 # By default Redis does not run as a daemon. Use 'yes' if you need it.
