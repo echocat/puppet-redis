@@ -54,7 +54,7 @@ Most of the time you will only need `redis_version`.
   }
 ```
 To install redis from package use the following parameters.
-You will need `redis_version` and `redis_package`. 
+You will need `redis_version` and `redis_package`.
 ```puppet
   class { 'redis::install':
     redis_version  => '2.8.18-1.el6.remi',
@@ -112,12 +112,16 @@ node 'redis-master.my.domain' {
 
   redis::server {
     'master':
-      redis_memory    => '1g',
-      redis_ip        => '0.0.0.0',
-      redis_port      => 6379,
-      running         => true,
-      enabled         => true,
-      requirepass     => 'some_really_long_random_password',
+      redis_memory               => '1g',
+      redis_ip                   => '0.0.0.0',
+      redis_port                 => 6379,
+      running                    => true,
+      enabled                    => true,
+      requirepass                => 'some_really_long_random_password',
+      client_output_buffer_limit => {
+        'normal' => '0 0 0',
+        'slave'  => '500000000 300000000 60',
+      },
   }
 }
 
@@ -145,7 +149,7 @@ node 'redis-slave.my.domain' {
 Please note that right now you can only create cluster-enabled instances
 but you cannot configure a Redis Cluster only with this module. You should
 still use `redis-trib.rb` from Redis source distribution or configure it
-by hand with redis cluster commands. Moreover, the cluster mode will be enabled 
+by hand with redis cluster commands. Moreover, the cluster mode will be enabled
 only for Redis >= 3.0
 
 A simple example of a cluster-enabled instance, with a timeout of 5 seconds to
@@ -253,7 +257,7 @@ The dir to which the newly built redis binaries are copied.
 Redis system user. Default: undef (string)
 Default 'undef' results to 'root' as redis system user
 
-Some redis install packages create the redis system user by default (at 
+Some redis install packages create the redis system user by default (at
 least SLES and Ubuntu provide redis install packages).
 Normally the log directory and the pid directory are created also by
 the redis install package. Therefor, these values must be adjusted too.
@@ -266,7 +270,7 @@ Default 'undef' results to 'root' as redis system group
 
 #####`download_base`
 
-Url where to find the source tar.gz. 
+Url where to find the source tar.gz.
 Default value is 'http://download.redis.io/releases'
 
 ####Defined Type: `redis::server`
@@ -398,10 +402,16 @@ Configure Redis save snapshotting. Example: [[900, 1], [300, 10]]. Default: []
 
 Boolean. Default: `false`
 
-Configure if the redis config is overwritten by puppet followed by a restart. 
+Configure if the redis config is overwritten by puppet followed by a restart.
 Since redis automatically rewrite their config since
 version 2.8 setting this to `true` will trigger a redis restart on each puppet
 run with redis 2.8 or later.
+
+#####`client_output_buffer_limit`
+
+Hash containing 3 possible classes as keys (normal, slave, pubsub) and with the
+values set to the hard limit, soft limit and seconds.
+Default: empty
 
 #####`manage_logrotate`
 
@@ -428,6 +438,10 @@ Configure Redis slave to be in read-only mode. Default: true (boolean)
 #####`repl_timeout`
 
 Configure Redis slave replication timeout in seconds. Default: 60 (number)
+
+#####`repl_backlog_size`
+
+Configure Redis slave backlog size in bytes. Default: undef
 
 #####`repl_ping_slave_period`
 
