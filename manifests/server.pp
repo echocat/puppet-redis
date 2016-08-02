@@ -69,6 +69,8 @@
 #   Configure Redis slave replication timeout
 # [*repl_ping_slave_period*]
 #   Configure Redis replication ping slave period
+# [*repl_backlog_size*]
+#   Replication backlog size (in bytes or multiples). Default: undef
 # [*save*]
 #   Configure Redis save snapshotting. Example: [[900, 1], [300, 10]]. Default: []
 # [*hash_max_ziplist_entries*]
@@ -83,6 +85,11 @@
 #   Since redis automatically rewrite their config since version 2.8 what conflicts with puppet
 #   the config files created by puppet will be copied to this directory and redis will be started from
 #   this copy.
+#
+# [*client_output_buffer_limit*]
+#   Hash containing 3 possible classes as keys (normal, slave, pubsub) and
+#   with the values set to the hard limit, soft limit and seconds.
+#   Default: empty
 #
 # [*manage_logrotate*]
 #   Configure logrotate rules for redis server. Default: true
@@ -106,46 +113,48 @@
 #   is at least an hash slot uncovered.
 
 define redis::server (
-  $redis_name              = $name,
-  $redis_memory            = '100mb',
-  $redis_ip                = '127.0.0.1',
-  $redis_port              = 6379,
-  $redis_usesocket         = false,
-  $redis_socket            = '/tmp/redis.sock',
-  $redis_socketperm        = 755,
-  $redis_mempolicy         = 'allkeys-lru',
-  $redis_memsamples        = 3,
-  $redis_timeout           = 0,
-  $redis_nr_dbs            = 1,
-  $redis_dbfilename        = 'dump.rdb',
-  $redis_dir               = '/var/lib',
-  $redis_log_dir           = '/var/log',
-  $redis_pid_dir           = '/var/run',
-  $redis_run_dir           = '/var/run/redis',
-  $redis_loglevel          = 'notice',
-  $redis_appedfsync        = 'everysec',
-  $running                 = true,
-  $enabled                 = true,
-  $requirepass             = undef,
-  $maxclients              = undef,
-  $appendfsync_on_rewrite  = false,
-  $aof_rewrite_percentage  = 100,
-  $aof_rewrite_minsize     = 64,
-  $redis_appendfsync       = 'everysec',
-  $redis_enabled_append_file = false,
-  $redis_append_file       = undef,
-  $redis_append_enable     = false,
-  $slaveof                 = undef,
-  $masterauth              = undef,
-  $slave_serve_stale_data  = true,
-  $slave_read_only         = true,
-  $repl_timeout            = 60,
-  $repl_ping_slave_period  = 10,
-  $save                    = [],
-  $hash_max_ziplist_entries = 512,
-  $hash_max_ziplist_value  = 64,
-  $manage_logrotate        = true,
-  $cluster_enabled         = false,
+  $redis_name                    = $name,
+  $redis_memory                  = '100mb',
+  $redis_ip                      = '127.0.0.1',
+  $redis_port                    = 6379,
+  $redis_usesocket               = false,
+  $redis_socket                  = '/tmp/redis.sock',
+  $redis_socketperm              = 755,
+  $redis_mempolicy               = 'allkeys-lru',
+  $redis_memsamples              = 3,
+  $redis_timeout                 = 0,
+  $redis_nr_dbs                  = 1,
+  $redis_dbfilename              = 'dump.rdb',
+  $redis_dir                     = '/var/lib',
+  $redis_log_dir                 = '/var/log',
+  $redis_pid_dir                 = '/var/run',
+  $redis_run_dir                 = '/var/run/redis',
+  $redis_loglevel                = 'notice',
+  $redis_appedfsync              = 'everysec',
+  $running                       = true,
+  $enabled                       = true,
+  $requirepass                   = undef,
+  $maxclients                    = undef,
+  $appendfsync_on_rewrite        = false,
+  $aof_rewrite_percentage        = 100,
+  $aof_rewrite_minsize           = 64,
+  $redis_appendfsync             = 'everysec',
+  $redis_enabled_append_file     = false,
+  $redis_append_file             = undef,
+  $redis_append_enable           = false,
+  $slaveof                       = undef,
+  $masterauth                    = undef,
+  $slave_serve_stale_data        = true,
+  $slave_read_only               = true,
+  $repl_timeout                  = 60,
+  $repl_ping_slave_period        = 10,
+  $repl_backlog_size             = undef,
+  $save                          = [],
+  $hash_max_ziplist_entries      = 512,
+  $hash_max_ziplist_value        = 64,
+  $client_output_buffer_limit    = {},
+  $manage_logrotate              = true,
+  $cluster_enabled               = false,
   $cluster_node_timeout          = undef,
   $cluster_slave_validity_factor = undef,
   $cluster_migration_barrier     = undef,
