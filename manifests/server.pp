@@ -150,7 +150,6 @@ define redis::server (
   $cluster_slave_validity_factor = undef,
   $cluster_migration_barrier     = undef,
   $cluster_require_full_coverage = true,
-  
 ) {
   $redis_user              = $::redis::install::redis_user
   $redis_group             = $::redis::install::redis_group
