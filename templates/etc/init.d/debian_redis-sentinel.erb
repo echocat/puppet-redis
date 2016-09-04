@@ -24,7 +24,7 @@ start() {
     local retval
 
     [ -f "$REDIS_CONF_FILE" ] || exit 6
-    [ -d <%= @sentinel_run_dir %> ] mkdir -p <%= @sentinel_run_dir %>
+    [ -d <%= @sentinel_run_dir %> ] || mkdir -p <%= @sentinel_run_dir %>
     cp -u $REDIS_CONF_FILE $RUNTIME_CONF_FILE
 
     log_daemon_msg "Starting $REDIS_NAME"
