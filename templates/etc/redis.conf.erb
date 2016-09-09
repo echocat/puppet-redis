@@ -22,6 +22,10 @@ daemonize no
 daemonize yes
 <% end -%>
 
+<% if @protected_mode then -%>
+protected-mode <%= @protected_mode %>
+<% end -%>
+
 # When running daemonized, Redis writes a pid file in <%= @redis_pid_dir %>/redis.pid by
 # default. You can specify a custom pid file location here.
 pidfile <%= @redis_pid_dir %>/redis_<%= @redis_name %>.pid

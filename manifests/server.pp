@@ -76,6 +76,10 @@
 # [*hash_max_ziplist_value*]
 #   Threshold for ziplist value. Default: 64
 #
+# [*protected_mode*]
+#   If no password and/or no bind address is set, redis defaults to being reachable only
+#   on the loopback interface. Turn this behaviour off by setting protected mode to 'no'.
+#
 # [*redis_run_dir*]
 #
 #   Default: `/var/run/redis`
@@ -146,6 +150,7 @@ define redis::server (
   $hash_max_ziplist_value  = 64,
   $manage_logrotate        = true,
   $cluster_enabled         = false,
+  $protected_mode          = undef,
   $cluster_node_timeout          = undef,
   $cluster_slave_validity_factor = undef,
   $cluster_migration_barrier     = undef,

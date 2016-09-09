@@ -15,6 +15,11 @@
 #   Path for pid file. Full pid path is <sentinel_pid_dir>/redis-sentinel_<redis_name>.pid. Default: /var/run
 # [*monitors*]
 #   Default is
+#
+# [*protected_mode*]
+#   If no password and/or no bind address is set, sentinel defaults to being reachable only
+#   on the loopback interface. Turn this behaviour off by setting protected mode to 'no'.
+#
 # {
 #   'mymaster' => {
 #     master_host             => '127.0.0.1',
@@ -50,6 +55,7 @@ define redis::sentinel (
   $sentinel_log_dir = '/var/log',
   $sentinel_pid_dir = '/var/run',
   $sentinel_run_dir = '/var/run/redis',
+  $protected_mode   = undef,
   $monitors         = {
     'mymaster' => {
       master_host             => '127.0.0.1',
@@ -79,6 +85,10 @@ define redis::sentinel (
   validate_bool($running)
   validate_bool($enabled)
   validate_bool($manage_logrotate)
+
+  if $protected_mode {
+    validate_re($protected_mode,['^no$', '^yes$'])
+  }
 
   $redis_install_dir = $::redis::install::redis_install_dir
   $sentinel_init_script = $::operatingsystem ? {
