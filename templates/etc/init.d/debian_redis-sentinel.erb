@@ -1,12 +1,16 @@
 #!/bin/sh
 #
-# redis - this script starts and stops the redis-server daemon
-#
-# chkconfig:   - 85 15
-# description:  Redis Sentinel is a monitor for redis servers
-# processname: redis-sentinel
-# config:      /etc/redis-sentinel_<%= @sentinel_name %>.conf
-# pidfile:     <%= @sentinel_pid_dir %>/redis-sentinel_<%= @sentinel_name %>.pid
+### BEGIN INIT INFO
+# Provides:             redis-sentinel
+# Required-Start:       $syslog $remote_fs
+# Required-Stop:        $syslog $remote_fs
+# Should-Start:         $local_fs
+# Should-Stop:          $local_fs
+# Default-Start:        2 3 4 5 
+# Default-Stop:         0 1 6 
+# Short-Description:    Redis Sentinel is a monitor for redis servers 
+# Description:          Redis Sentinel is a monitor for redis servers
+### END INIT INFO
 
 # Source function library.
 . /lib/lsb/init-functions
@@ -24,7 +28,7 @@ start() {
     local retval
 
     [ -f "$REDIS_CONF_FILE" ] || exit 6
-    [ -d <%= @sentinel_run_dir %> ] mkdir -p <%= @sentinel_run_dir %>
+    [ -d <%= @sentinel_run_dir %> ] || mkdir -p <%= @sentinel_run_dir %>
     cp -u $REDIS_CONF_FILE $RUNTIME_CONF_FILE
 
     log_daemon_msg "Starting $REDIS_NAME"
