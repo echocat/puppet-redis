@@ -17,8 +17,8 @@ gem 'puppet-lint', '>= 0.3.2',            :require => false
 gem 'rspec-puppet', '>= 2.3.2',           :require => false
 gem 'rspec-puppet-facts',                 :require => false
 gem 'metadata-json-lint',                 :require => false
-gem 'rake', '< 11.0.0', # ruby <1.9 versus rake 11.0.0 workaround
-gem 'json', '< 2.0.0'  # ruby <2.0 versus json 2.0.2 workaround
+gem 'json', '< 2.0.0',
+gem 'rake', '< 11.0.0' # ruby <1.9 versus rake 11.0.0 workaround
 
 if File.exists? "#{__FILE__}.local"
   eval(File.read("#{__FILE__}.local"), binding)
