@@ -120,7 +120,7 @@ define redis::server (
   $redis_dbfilename        = 'dump.rdb',
   $redis_dir               = '/var/lib',
   $redis_log_dir           = '/var/log',
-  $redis_pid_dir           = '/var/run',
+  $redis_pid_dir           = '/var/run/redis',
   $redis_run_dir           = '/var/run/redis',
   $redis_loglevel          = 'notice',
   $redis_appedfsync        = 'everysec',
@@ -194,12 +194,21 @@ define redis::server (
       notify  => Exec["systemd_service_${redis_name}_preset"],
     }
   } else {
+    $sysconfig_file = "/etc/sysconfig/redis_${redis_name}"
+    file { $sysconfig_file:
+      ensure  => file,
+      mode    => '0755',
+      content => inline_template('REDIS_USER=<%= @redis_user %>'),
+      notify  => Service["redis-server_${redis_name}"],
+    }
+
     $service_file = "/etc/init.d/redis-server_${redis_name}"
     file { $service_file:
       ensure  => file,
       mode    => '0755',
       content => template($redis_init_script),
       require => [
+        File[$sysconfig_file],
         File[$conf_file],
         File["${redis_dir}/redis_${redis_name}"]
       ],
@@ -223,6 +232,28 @@ define redis::server (
     require => Class['redis::install'],
     owner   => $redis_user,
     group   => $redis_group,
+  }
+
+  # path for pid and runtime config
+  if ! defined(File[$redis_run_dir]) {
+    file { $redis_run_dir:
+      ensure  => directory,
+      require => Class['redis::install'],
+      owner   => 'root',
+      group   => $redis_group,
+      mode    => '0775',
+    }
+  }
+
+  # path for logs
+  if ! defined(File[$redis_log_dir]) {
+    file { $redis_log_dir:
+      ensure  => directory,
+      require => Class['redis::install'],
+      owner   => 'root',
+      group   => $redis_group,
+      mode    => '0775',
+    }
   }
 
   if ($manage_logrotate == true){

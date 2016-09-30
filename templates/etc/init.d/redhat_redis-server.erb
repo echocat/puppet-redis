@@ -25,17 +25,17 @@ pidfile="<%= @redis_pid_dir %>/redis_<%= @redis_name %>.pid"
 REDIS_CONF_FILE="/etc/redis_<%= @redis_name %>.conf"
 RUNTIME_CONF_FILE="<%= @redis_run_dir %>/redis_<%= @redis_name %>.conf"
 
-#[ -f /etc/sysconfig/redis ] && . /etc/sysconfig/redis
+[ -f /etc/sysconfig/redis_<%= @redis_name %> ] && . /etc/sysconfig/redis_<%= @redis_name %>
 
 lockfile="/var/lock/subsys/redis_<%= @redis_name %>"
 
 start() {
     [ -x $redis ] || exit 5
     [ -f $REDIS_CONF_FILE ] || exit 6
-    [ -d <%= @redis_pid_dir %> ] || mkdir -p <%= @redis_pid_dir %>
+    [ -d <%= @redis_pid_dir %> ] || exit 7
     echo -n $"Starting $prog: "
     cp -u $REDIS_CONF_FILE $RUNTIME_CONF_FILE
-    daemon $redis $RUNTIME_CONF_FILE
+    daemon --user ${REDIS_USER-redis} --check $prog $redis $RUNTIME_CONF_FILE
     retval=$?
     echo
     [ $retval -eq 0 ] && touch $lockfile
@@ -44,7 +44,7 @@ start() {
 
 stop() {
     echo -n $"Stopping $prog: "
-    killproc $prog
+    killproc -p $pidfile -b $redis $prog
     retval=$?
     echo
     [ $retval -eq 0 ] && rm -f $lockfile
@@ -59,7 +59,7 @@ restart() {
 
 reload() {
     echo -n $"Reloading $prog: "
-    killproc $redis -HUP
+    killproc -p $pidfile -b $redis $prog -HUP
     RETVAL=$?
     echo
 }
@@ -69,7 +69,7 @@ force_reload() {
 }
 
 rh_status() {
-    status -p $pidfile
+    status -p $pidfile -b $redis $prog
     retval=$?
     return $retval
 }
