@@ -198,7 +198,7 @@ define redis::server (
     file { $sysconfig_file:
       ensure  => file,
       mode    => '0755',
-      content => inline_template("REDIS_USER=<%= @redis_user %>"),
+      content => inline_template('REDIS_USER=<%= @redis_user %>'),
       notify  => Service["redis-server_${redis_name}"],
     }
 
@@ -241,7 +241,7 @@ define redis::server (
       require => Class['redis::install'],
       owner   => 'root',
       group   => $redis_group,
-      mode    => 0775,
+      mode    => '0775',
     }
   }
 
@@ -252,7 +252,7 @@ define redis::server (
       require => Class['redis::install'],
       owner   => 'root',
       group   => $redis_group,
-      mode    => 0775,
+      mode    => '0775',
     }
   }
 
