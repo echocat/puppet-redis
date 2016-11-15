@@ -18,6 +18,11 @@ bind <%= @sentinel_ip %>
 <% end -%>
 port <%= @sentinel_port %>
 
+<% if @protected_mode then -%>
+protected-mode <%= @protected_mode %>
+
+<% end -%>
+
 <%
   #rules = scope.lookupvar('redis::sentinel::monitors')
   @monitors.sort.each do |name, rule| -%>
