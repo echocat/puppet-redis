@@ -64,15 +64,15 @@ class redis::install (
     # install necessary packages for build.
     case $::operatingsystem {
       'Debian', 'Ubuntu' : {
-        ensure_packages('build-essential')
+        ensure_packages(['build-essential'])
         Package['build-essential'] -> Anchor['redis::prepare_build']
       }
       'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon', 'Scientific', 'Sles' : {
-        ensure_packages('make')
+        ensure_packages(['make'])
         Package['make'] -> Anchor['redis::prepare_build']
-        ensure_packages('gcc')
+        ensure_packages(['gcc'])
         Package['gcc'] -> Anchor['redis::prepare_build']
-        ensure_packages('glibc-devel')
+        ensure_packages(['glibc-devel'])
         Package['glibc-devel'] -> Anchor['redis::prepare_build']
       }
       default            : {

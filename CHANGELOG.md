@@ -5,12 +5,14 @@
 - Fix broken systemd part for Debian
 - Fix cluster coverage error in redis.conf template
 - Add required update-rc.d headers to debian init.d scripts
+- Fix ensure_packages expects an array
 
 #### Features:
 
-- redis and sentinel: allow turning off protected mode
-- Added  option to redis.conf: client-output-buffer-limit, as a hash
-- Added  option to redis.conf: repl_backlog_size, a simple value
+- Redis, Sentinel: allow turning off protected mode
+- Server: Added option to redis.conf: client-output-buffer-limit, as a hash
+- Server: Added  option to redis.conf: repl_backlog_size, a simple value
+- Server: add include parameter for config
 - allows for compatibility with Amazon Linux
 - Add cluster params documentation + enable cluster support
 
