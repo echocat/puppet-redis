@@ -115,6 +115,9 @@
 # [*cluster_require_full_coverage*]
 #   By default Redis Cluster nodes stop accepting queries if they detect there
 #   is at least an hash slot uncovered.
+#
+# [*include*]
+#   Array of extra configs to include Example: [ '/etc/redis/local.conf' ]
 
 define redis::server (
   $redis_name                    = $name,
@@ -164,6 +167,7 @@ define redis::server (
   $cluster_migration_barrier     = undef,
   $cluster_require_full_coverage = true,
   $protected_mode                = undef,
+  $include                       = [],
 ) {
   $redis_user              = $::redis::install::redis_user
   $redis_group             = $::redis::install::redis_group
