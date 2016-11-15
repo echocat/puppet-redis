@@ -531,7 +531,11 @@ cluster-migration-barrier <%= @cluster_migration_barrier %>
 # option to no.
 #
 # cluster-require-full-coverage yes
-<% if @cluster_require_full_coverage -%>cluster-require-full-coverage yes<% else -%>no<% end -%>
+<% if @cluster_require_full_coverage -%>
+cluster-require-full-coverage yes
+<% else -%>
+cluster-require-full-coverage no
+<% end -%>
 
 # In order to setup your cluster make sure to read the documentation
 # available at http://redis.io web site.
