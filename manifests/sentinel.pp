@@ -15,6 +15,11 @@
 #   Path for pid file. Full pid path is <sentinel_pid_dir>/redis-sentinel_<redis_name>.pid. Default: /var/run
 # [*monitors*]
 #   Default is
+#
+# [*protected_mode*]
+#   If no password and/or no bind address is set, sentinel defaults to being reachable only
+#   on the loopback interface. Turn this behaviour off by setting protected mode to 'no'.
+#
 # {
 #   'mymaster' => {
 #     master_host             => '127.0.0.1',
@@ -50,6 +55,7 @@ define redis::sentinel (
   $sentinel_log_dir = '/var/log',
   $sentinel_pid_dir = '/var/run',
   $sentinel_run_dir = '/var/run/redis',
+  $protected_mode   = undef,
   $monitors         = {
     'mymaster' => {
       master_host             => '127.0.0.1',
@@ -80,6 +86,10 @@ define redis::sentinel (
   validate_bool($enabled)
   validate_bool($manage_logrotate)
 
+  if $protected_mode {
+    validate_re($protected_mode,['^no$', '^yes$'])
+  }
+
   $redis_install_dir = $::redis::install::redis_install_dir
   $sentinel_init_script = $::operatingsystem ? {
     /(Debian|Ubuntu)/                                          => 'redis/etc/init.d/debian_redis-sentinel.erb',
@@ -98,7 +108,7 @@ define redis::sentinel (
   }
 
   # startup script
-  if ($::osfamily == 'RedHat' and versioncmp($::operatingsystemmajrelease, '7') >=0) {
+  if ($::osfamily == 'RedHat' and versioncmp($::operatingsystemmajrelease, '7') >=0 and $::operatingsystem != 'Amazon') {
     $service_file = "/usr/lib/systemd/system/redis-sentinel_${sentinel_name}.service"
     exec { "systemd_service_${sentinel_name}_preset":
       command     => "/bin/systemctl preset redis-sentinel_${sentinel_name}.service",

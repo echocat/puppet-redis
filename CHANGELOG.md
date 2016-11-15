@@ -1,3 +1,19 @@
+## 2016-11-15 - 2.0.0 (Feature/Bugfix release)
+
+#### Bugfixes:
+
+- Fix broken systemd part for Debian
+- Fix cluster coverage error in redis.conf template
+- Add required update-rc.d headers to debian init.d scripts
+
+#### Features:
+
+- redis and sentinel: allow turning off protected mode
+- Added  option to redis.conf: client-output-buffer-limit, as a hash
+- Added  option to redis.conf: repl_backlog_size, a simple value
+- allows for compatibility with Amazon Linux
+- Add cluster params documentation + enable cluster support
+
 ## 2016-06-24 - 1.9.0 (Feature/Bugfix release)
 
 #### Bugfixes:
