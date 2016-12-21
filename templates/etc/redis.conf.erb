@@ -247,6 +247,9 @@ repl-timeout <%= @repl_timeout %>
 # an empty string:
 #
 # rename-command CONFIG ""
+<% @redis_disable_commands.each do |command| -%>
+rename-command <%= command %> ""
+<% end -%>
 
 ################################### LIMITS ####################################
 
