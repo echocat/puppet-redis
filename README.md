@@ -370,6 +370,10 @@ Max clients of Redis instance. Default: undef (number)
 
 Configure the no-appendfsync-on-rewrite variable. Set to yes to enable the option. Defaults off. Default: false (boolean)
 
+#####`redis_disable_commands`
+
+List of commands to disable on the server. Default: []
+
 #####`aof_rewrite_percentage`
 
 Configure the percentage size difference between the last aof filesize and the newest to trigger a rewrite. Default 100

@@ -57,6 +57,8 @@
 #   Define the path for the append file. Optional. Default: undef
 # [*redis_append_enable*]
 #   Enable or disable the appendonly file option. Default: false
+# [*redis_disable_commands]
+#   List of commands to disable on the server. Default: []
 # [*slaveof*]
 #   Configure Redis Master on a slave
 # [*masterauth*]
@@ -149,6 +151,7 @@ define redis::server (
   $redis_enabled_append_file     = false,
   $redis_append_file             = undef,
   $redis_append_enable           = false,
+  $redis_disable_commands        = [],
   $slaveof                       = undef,
   $masterauth                    = undef,
   $slave_serve_stale_data        = true,
