@@ -15,6 +15,7 @@
 - Server: add include parameter for config
 - allows for compatibility with Amazon Linux
 - Add cluster params documentation + enable cluster support
+- Add redis_disable_commands
 
 ## 2016-06-24 - 1.9.0 (Feature/Bugfix release)
 
