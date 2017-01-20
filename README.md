@@ -560,6 +560,10 @@ stdlib by puppetlabs
 facter > 1.6.2
 puppet > 2.6.2
 
+###Packages required:
+
+wget
+
 ##Limitations
 
 This module is tested on CentOS 6.5 and Debian 7 (Wheezy) and should also run without problems on
