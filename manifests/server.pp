@@ -190,24 +190,27 @@ define redis::server (
   $conf_file_name = "redis_${redis_name}.conf"
   $conf_file = "/etc/${conf_file_name}"
   file { $conf_file:
-      ensure  => file,
-      content => template('redis/etc/redis.conf.erb'),
-      require => Class['redis::install'];
+    ensure  => file,
+    content => template('redis/etc/redis.conf.erb'),
+    require => Class['redis::install'];
   }
 
   # startup script
-  case $::osfamily {
+  case $::operatingsystem {
     'RedHat': {
       $service_file = "/usr/lib/systemd/system/redis-server_${redis_name}.service"
-      if versioncmp($::operatingsystemmajrelease, '7') >= 0 { $has_systemd = true }
+      if versioncmp($::operatingsystemmajrelease, '7') > 0 { $has_systemd = true }
     }
     'Debian': {
-      if ($::operatingsystem == 'Debian' and versioncmp($::operatingsystemmajrelease, '8') >= 0) or ($::operatingsystem == 'Ubuntu' and versioncmp($::operatingsystemmajrelease, '15.04') >= 0) {
-        $service_file = "/etc/systemd/system/redis-server_${redis_name}.service"
-        $has_systemd = true
-      }
+      $service_file = "/etc/systemd/system/redis-server_${redis_name}.service"
+      if versioncmp($::operatingsystemmajrelease, '8') > 0 { $has_systemd = true }
+    }
+    'Ubuntu': {
+      $service_file = "/etc/systemd/system/redis-server_${redis_name}.service"
+      if versioncmp($::operatingsystemmajrelease, '14.04') > 0 { $has_systemd = true }
     }
     default:  {
+      $service_file = "/etc/init.d/redis-server_${redis_name}"
       $has_systemd = false
     }
   }
@@ -230,7 +233,6 @@ define redis::server (
       notify  => Exec["systemd_service_${redis_name}_preset"],
     }
   } else {
-    $service_file = "/etc/init.d/redis-server_${redis_name}"
     file { $service_file:
       ensure  => file,
       mode    => '0755',
