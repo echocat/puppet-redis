@@ -197,7 +197,7 @@ define redis::server (
 
   # startup script
   case $::operatingsystem {
-    'RedHat': {
+    'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon', 'Scientific': {
       $service_file = "/usr/lib/systemd/system/redis-server_${redis_name}.service"
       if versioncmp($::operatingsystemmajrelease, '7') > 0 { $has_systemd = true }
     }
