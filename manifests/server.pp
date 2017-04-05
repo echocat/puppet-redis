@@ -208,7 +208,7 @@ define redis::server (
   }
 
   if $has_systemd {
-    exec { "systemd_service_${redis_name}_preset":
+    exec { "systemd_service_server_${redis_name}_preset":
       command     => "/bin/systemctl preset redis-server_${redis_name}.service",
       notify      => Service["redis-server_${redis_name}"],
       refreshonly => true,
@@ -222,7 +222,7 @@ define redis::server (
         File[$conf_file],
         File["${redis_dir}/redis_${redis_name}"]
       ],
-      notify  => Exec["systemd_service_${redis_name}_preset"],
+      notify  => Exec["systemd_service_server_${redis_name}_preset"],
     }
   } else {
     $service_file = "/etc/init.d/redis-server_${redis_name}"
