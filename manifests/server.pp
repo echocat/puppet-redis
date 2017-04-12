@@ -57,6 +57,8 @@
 #   Define the path for the append file. Optional. Default: undef
 # [*redis_append_enable*]
 #   Enable or disable the appendonly file option. Default: false
+# [*redis_disable_commands]
+#   List of commands to disable on the server. Default: []
 # [*slaveof*]
 #   Configure Redis Master on a slave
 # [*masterauth*]
@@ -149,6 +151,7 @@ define redis::server (
   $redis_enabled_append_file     = false,
   $redis_append_file             = undef,
   $redis_append_enable           = false,
+  $redis_disable_commands        = [],
   $slaveof                       = undef,
   $masterauth                    = undef,
   $slave_serve_stale_data        = true,
@@ -187,28 +190,33 @@ define redis::server (
   $conf_file_name = "redis_${redis_name}.conf"
   $conf_file = "/etc/${conf_file_name}"
   file { $conf_file:
-      ensure  => file,
-      content => template('redis/etc/redis.conf.erb'),
-      require => Class['redis::install'];
+    ensure  => file,
+    content => template('redis/etc/redis.conf.erb'),
+    require => Class['redis::install'];
   }
 
   # startup script
-  case $::osfamily {
-    'RedHat': {
+  case $::operatingsystem {
+    'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon', 'Scientific': {
       $service_file = "/usr/lib/systemd/system/redis-server_${redis_name}.service"
-      if $::operatingsystemmajrelease >= 7 { $has_systemd = true }
+      if versioncmp($::operatingsystemmajrelease, '7') > 0 { $has_systemd = true }
     }
     'Debian': {
       $service_file = "/etc/systemd/system/redis-server_${redis_name}.service"
-      if $::operatingsystemmajrelease >= 8 { $has_systemd = true }
+      if versioncmp($::operatingsystemmajrelease, '8') > 0 { $has_systemd = true }
+    }
+    'Ubuntu': {
+      $service_file = "/etc/systemd/system/redis-server_${redis_name}.service"
+      if versioncmp($::operatingsystemmajrelease, '14.04') > 0 { $has_systemd = true }
     }
     default:  {
+      $service_file = "/etc/init.d/redis-server_${redis_name}"
       $has_systemd = false
     }
   }
 
   if $has_systemd {
-    exec { "systemd_service_${redis_name}_preset":
+    exec { "systemd_service_server_${redis_name}_preset":
       command     => "/bin/systemctl preset redis-server_${redis_name}.service",
       notify      => Service["redis-server_${redis_name}"],
       refreshonly => true,
@@ -222,10 +230,9 @@ define redis::server (
         File[$conf_file],
         File["${redis_dir}/redis_${redis_name}"]
       ],
-      notify  => Exec["systemd_service_${redis_name}_preset"],
+      notify  => Exec["systemd_service_server_${redis_name}_preset"],
     }
   } else {
-    $service_file = "/etc/init.d/redis-server_${redis_name}"
     file { $service_file:
       ensure  => file,
       mode    => '0755',

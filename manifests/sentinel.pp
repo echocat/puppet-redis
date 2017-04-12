@@ -110,7 +110,7 @@ define redis::sentinel (
   # startup script
   if ($::osfamily == 'RedHat' and versioncmp($::operatingsystemmajrelease, '7') >=0 and $::operatingsystem != 'Amazon') {
     $service_file = "/usr/lib/systemd/system/redis-sentinel_${sentinel_name}.service"
-    exec { "systemd_service_${sentinel_name}_preset":
+    exec { "systemd_service_sentinel_${sentinel_name}_preset":
       command     => "/bin/systemctl preset redis-sentinel_${sentinel_name}.service",
       notify      => Service["redis-sentinel_${sentinel_name}"],
       refreshonly => true,
@@ -121,7 +121,7 @@ define redis::sentinel (
       mode    => '0755',
       content => template('redis/systemd/sentinel.service.erb'),
       require => File[$conf_file],
-      notify  => Exec["systemd_service_${sentinel_name}_preset"],
+      notify  => Exec["systemd_service_sentinel_${sentinel_name}_preset"],
     }
   } else {
     $service_file = "/etc/init.d/redis-sentinel_${sentinel_name}"
