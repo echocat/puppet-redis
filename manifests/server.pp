@@ -245,17 +245,6 @@ define redis::server (
     }
   }
 
-  # path for persistent data
-  # If we specify a directory that's not default we need to pass it as hash
-  # and ensure that we do not have duplicate warning, when we have multiple
-  # redis Instances on one host
-  if ! defined(File[$redis_dir]) {
-    file { $redis_dir:
-      ensure  => directory,
-      require => Class['redis::install'],
-    }
-  }
-
   file { "${redis_dir}/redis_${redis_name}":
     ensure  => directory,
     require => Class['redis::install'],
