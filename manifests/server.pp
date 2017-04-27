@@ -198,9 +198,14 @@ define redis::server (
   # startup script
   case $::operatingsystem {
     'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon', 'Scientific': {
+      if versioncmp($::operatingsystemmajrelease, '7') > 0 {
+      $has_systemd = true
       $service_file = "/usr/lib/systemd/system/redis-server_${redis_name}.service"
-      if versioncmp($::operatingsystemmajrelease, '7') > 0 { $has_systemd = true }
+    } else {
+      $has_systemd = false
+      $service_file = "/etc/init.d/redis-server_${redis_name}"
     }
+  }
     'Debian': {
       $service_file = "/etc/systemd/system/redis-server_${redis_name}.service"
       if versioncmp($::operatingsystemmajrelease, '8') > 0 { $has_systemd = true }
