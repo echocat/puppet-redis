@@ -552,6 +552,17 @@ run with redis 2.8 or later.
 
 Configure logrotate rules for redis server. Default: true
 
+##### `announce_ip`
+
+Configure announce-ip in Sentinel configuration.  When announce-ip is provided, the Sentinel will claim the specified IP address
+in HELLO messages used to gossip its presence, instead of auto-detecting the local address as it usually does.
+
+##### `announce_port`
+
+Configure announce-port in Sentinel configuration.  Similarly when announce-port is provided and is valid and non-zero, Sentinel will announce the specified TCP port.
+
+*The above two configuration directives are useful in environments where, because of NAT, Sentinel is reachable from outside via a non-local address.  The two options don't need to be used together, if only announce-ip is provided, the Sentinel will announce the specified IP and the server port as specified by the "port" option. If only announce-port is provided, the Sentinel will announce the auto-detected local IP and the specified port.*
+
 ## Limitations
 
 This module is tested on CentOS 6.5 and Debian 7 (Wheezy) and should also run without problems on

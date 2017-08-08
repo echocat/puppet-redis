@@ -23,6 +23,14 @@ protected-mode <%= @protected_mode %>
 
 <% end -%>
 
+<% if @announce_ip then -%>
+sentinel announce-ip <%= @announce_ip %>
+<% end -%>
+
+<% if @announce_port then -%>
+sentinel announce-port <%= @announce_port %>
+<% end -%>
+
 <%
   #rules = scope.lookupvar('redis::sentinel::monitors')
   @monitors.sort.each do |name, rule| -%>
