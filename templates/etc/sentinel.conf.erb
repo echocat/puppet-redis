@@ -31,6 +31,10 @@ sentinel announce-ip <%= @announce_ip %>
 sentinel announce-port <%= @announce_port %>
 <% end -%>
 
+<% if @sentinel_id then -%>
+sentinel myid <%= @sentinel_id %>
+<% end -%>
+
 <%
   #rules = scope.lookupvar('redis::sentinel::monitors')
   @monitors.sort.each do |name, rule| -%>

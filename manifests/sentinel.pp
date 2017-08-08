@@ -47,6 +47,8 @@
 #   to this directory and than sentinel will start with this copy.
 # [*manage_logrotate*]
 #   Configure logrotate rules for redis sentinel. Default: true
+# [*sentinel_id*]
+#   Configure the Sentinel ID.  (If defined, needs to be a 40 char string).  Default: undef
 # [*announce_ip*]
 #   Configure announce-ip in Sentinel configuration.  When announce-ip is provided,
 #   the Sentinel will claim the specified IP address in HELLO messages used to gossip its presence,
@@ -82,6 +84,7 @@ define redis::sentinel (
   $manage_logrotate = true,
   $announce_ip      = undef,
   $announce_port    = undef,
+  $sentinel_id      = undef,
 ) {
   $sentinel_user              = $::redis::install::redis_user
   $sentinel_group             = $::redis::install::redis_group
