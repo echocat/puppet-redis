@@ -118,7 +118,7 @@ define redis::sentinel (
 
     file { $service_file:
       ensure  => file,
-      mode    => '0755',
+      mode    => '0644',
       content => template('redis/systemd/sentinel.service.erb'),
       require => File[$conf_file],
       notify  => Exec["systemd_service_sentinel_${sentinel_name}_preset"],
@@ -127,7 +127,7 @@ define redis::sentinel (
     $service_file = "/etc/init.d/redis-sentinel_${sentinel_name}"
     file { $service_file:
       ensure  => file,
-      mode    => '0755',
+      mode    => '0644',
       content => template($sentinel_init_script),
       require => File[$conf_file],
       notify  => Service["redis-sentinel_${sentinel_name}"],
