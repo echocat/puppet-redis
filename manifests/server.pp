@@ -203,7 +203,7 @@ define redis::server (
     }
     'Debian': {
       $service_file = "/etc/systemd/system/redis-server_${redis_name}.service"
-      if versioncmp($::operatingsystemmajrelease, '8') > 0 { $has_systemd = true }
+      if versioncmp($::operatingsystemmajrelease, '7') > 0 { $has_systemd = true }
     }
     'Ubuntu': {
       $service_file = "/etc/systemd/system/redis-server_${redis_name}.service"
