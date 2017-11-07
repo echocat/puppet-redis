@@ -34,4 +34,5 @@ sentinel failover-timeout <%= name -%> <%= rule['failover_timeout'] %>
 <%- if rule['auth-pass'] then %>sentinel auth-pass <%= name -%> <%= rule['auth-pass'] %><% end -%>
 <%- if rule['notification-script'] then %>sentinel notification-script <%= name -%> <%= rule['notification-script'] %><% end -%>
 <%- if rule['client-reconfig-script'] then %>sentinel client-reconfig-script <%= name -%> <%= rule['client-reconfig-script'] %><% end -%>
+
 <% end -%>
