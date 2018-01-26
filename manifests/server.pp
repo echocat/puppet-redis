@@ -172,6 +172,8 @@ define redis::server (
   $protected_mode                = undef,
   $include                       = [],
 ) {
+  include redis::install
+
   $redis_user              = $::redis::install::redis_user
   $redis_group             = $::redis::install::redis_group
 
@@ -210,8 +212,8 @@ define redis::server (
       $has_systemd = versioncmp($::operatingsystemmajrelease, '15.04') >= 0
     }
     default:  {
-      $service_file = "/etc/init.d/redis-server_${redis_name}"
       $has_systemd = false
+      $service_file = "/etc/init.d/redis-server_${redis_name}"
     }
   }
 
