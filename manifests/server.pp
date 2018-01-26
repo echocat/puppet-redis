@@ -172,6 +172,8 @@ define redis::server (
   $protected_mode                = undef,
   $include                       = [],
 ) {
+  include redis::install
+
   $redis_user              = $::redis::install::redis_user
   $redis_group             = $::redis::install::redis_group
 
@@ -199,19 +201,19 @@ define redis::server (
   case $::operatingsystem {
     'Fedora', 'RedHat', 'CentOS', 'OEL', 'OracleLinux', 'Amazon', 'Scientific': {
       $service_file = "/usr/lib/systemd/system/redis-server_${redis_name}.service"
-      if versioncmp($::operatingsystemmajrelease, '7') > 0 { $has_systemd = true }
+      $has_systemd = versioncmp($::operatingsystemmajrelease, '7') >= 0
     }
     'Debian': {
       $service_file = "/etc/systemd/system/redis-server_${redis_name}.service"
-      if versioncmp($::operatingsystemmajrelease, '8') > 0 { $has_systemd = true }
+      $has_systemd = versioncmp($::operatingsystemmajrelease, '8') >= 0
     }
     'Ubuntu': {
       $service_file = "/etc/systemd/system/redis-server_${redis_name}.service"
-      if versioncmp($::operatingsystemmajrelease, '14.04') > 0 { $has_systemd = true }
+      $has_systemd = versioncmp($::operatingsystemmajrelease, '15.04') >= 0
     }
     default:  {
-      $service_file = "/etc/init.d/redis-server_${redis_name}"
       $has_systemd = false
+      $service_file = "/etc/init.d/redis-server_${redis_name}"
     }
   }
 
