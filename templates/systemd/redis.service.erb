@@ -3,8 +3,15 @@ Description=Redis redis_<%= @redis_name %> database server
 After=network.target
 
 [Service]
+<% if @redis_user and @redis_user != 'root' -%>
+PermissionsStartOnly=true
 ExecStartPre=/bin/mkdir -p <%= @redis_run_dir %>
+ExecStartPre=/bin/chown <%= @redis_user %>:<%= @redis_group or 'root' %> <%= @redis_run_dir %>
+<% else -%>
+ExecStartPre=/bin/mkdir -p <%= @redis_run_dir %>
+<% end -%>
 ExecStartPre=/bin/cp -u <%= @conf_file %> <%= @redis_run_dir %>/<%= @conf_file_name %>
+ExecStartPre=/bin/chown <%= @redis_user or 'root' %>:<%= @redis_group or 'root' %> <%= @redis_run_dir %>/<%= @conf_file_name %>
 ExecStart=/usr/bin/redis-server <%= @redis_run_dir %>/<%= @conf_file_name %> --daemonize no
 ExecStop=/usr/bin/redis-cli -p <%= @redis_port %> shutdown
 User=<%= @redis_user or 'root' %>
