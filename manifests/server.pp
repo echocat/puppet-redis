@@ -172,6 +172,8 @@ define redis::server (
   $protected_mode                = undef,
   $include                       = [],
 ) {
+  include redis::install
+
   $redis_user              = $::redis::install::redis_user
   $redis_group             = $::redis::install::redis_group
 
