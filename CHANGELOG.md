@@ -1,3 +1,15 @@
+## 2018-02-01 - 2.1.0 (Feature/Bugfix release)
+
+#### Features:
+
+- Add `redis_disable_commands` parameter to redis::server
+
+#### Bugfixes:
+
+- Fix systemd Ubuntu
+- Systemd: fix permission issue with `redis_run_dir` / `sentinel_run_dir`
+- Some more fixes for init.d
+
 ## 2016-11-15 - 2.0.0 (Feature/Bugfix release)
 
 #### Bugfixes:
