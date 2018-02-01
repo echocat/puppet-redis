@@ -31,7 +31,8 @@ sentinel monitor <%= name -%> <%= rule['master_host'] -%>  <%= rule['master_port
 sentinel down-after-milliseconds <%= name -%> <%= rule['down_after_milliseconds'] %>
 sentinel parallel-syncs <%= name -%> <%= rule['parallel-syncs'] %>
 sentinel failover-timeout <%= name -%> <%= rule['failover_timeout'] %>
-<%- if rule['auth-pass'] then %>sentinel auth-pass <%= name -%> <%= rule['auth-pass'] %><% end -%>
-<%- if rule['notification-script'] then %>sentinel notification-script <%= name -%> <%= rule['notification-script'] %><% end -%>
-<%- if rule['client-reconfig-script'] then %>sentinel client-reconfig-script <%= name -%> <%= rule['client-reconfig-script'] %><% end -%>
+<%- if rule['auth-pass'] then %>sentinel auth-pass <%= name -%> <%= rule['auth-pass'] %><% end %>
+<%- if rule['notification-script'] then %>sentinel notification-script <%= name -%> <%= rule['notification-script'] %><% end %>
+<%- if rule['client-reconfig-script'] then %>sentinel client-reconfig-script <%= name -%> <%= rule['client-reconfig-script'] %><% end %>
+
 <% end -%>
