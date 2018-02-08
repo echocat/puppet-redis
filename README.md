@@ -6,7 +6,7 @@
 2. [Setup - The basics of getting started with redis](#setup)
     * [Beginning with redis - Installation](#beginning-with-redis)
     * [Run multiple instances on same host](#run-multiple-instances-on-same-host)
-    * [Create a cluster-enabled instance](#create a cluster-enable instance)
+    * [Create a cluster-enabled instance](#create-a-cluster-enable-instance)
     * [Setting up sentinel with two monitors](#setting-up-sentinel-with-two-monitors)
 3. [Usage - The class and defined types available for configuration](#usage)
     * [Classes and Defined Types](#classes-and-defined-types)
