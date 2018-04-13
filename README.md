@@ -438,6 +438,10 @@ Configure Redis slave to server stale data. Default: true (boolean)
 
 Configure Redis slave to be in read-only mode. Default: true (boolean)
 
+##### `slave_priority`
+
+Configure Redis slave priority. Default: undef (number)
+
 ##### `repl_timeout`
 
 Configure Redis slave replication timeout in seconds. Default: 60 (number)
