@@ -201,6 +201,9 @@ repl-timeout <%= @repl_timeout %>
 #
 # By default the priority is 100.
 #slave-priority 100
+<% if @slave_priority then -%>
+slave-priority <%= @slave_priority %>
+<% end -%>
 
 # Set the replication backlog size. The backlog is a buffer that accumulates
 # slave data when slaves are disconnected for some time, so that when a slave
