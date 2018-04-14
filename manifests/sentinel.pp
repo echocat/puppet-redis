@@ -47,6 +47,15 @@
 #   to this directory and than sentinel will start with this copy.
 # [*manage_logrotate*]
 #   Configure logrotate rules for redis sentinel. Default: true
+# [*sentinel_id*]
+#   Configure the Sentinel ID.  (If defined, needs to be a 40 char string).  Default: undef
+# [*announce_ip*]
+#   Configure announce-ip in Sentinel configuration.  When announce-ip is provided,
+#   the Sentinel will claim the specified IP address in HELLO messages used to gossip its presence,
+#   instead of auto-detecting the local address as it usually does.
+# [*announce_port*]
+#   Configure announce-port in Sentinel configuration.  Similarly when announce-port is provided,
+#   and is valid and non-zero, Sentinel will announce the specified TCP port.
 define redis::sentinel (
   $ensure           = 'present',
   $sentinel_name    = $name,
