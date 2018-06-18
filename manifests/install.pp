@@ -39,6 +39,7 @@ class redis::install (
 
         service { 'redis-server':
           ensure    => stopped,
+          enable    => false,
           subscribe => Package['redis-server']
         }
       }
