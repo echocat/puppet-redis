@@ -157,7 +157,7 @@ define redis::sentinel (
 
     file { $service_file:
       ensure  => file,
-      mode    => '0755',
+      mode    => '0644',
       content => template($sentinel_init_script),
       require => File[$conf_file],
       notify  => Service["redis-sentinel_${sentinel_name}"],
