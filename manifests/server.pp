@@ -172,6 +172,11 @@ define redis::server (
   $protected_mode                = undef,
   $include                       = [],
   $systemd_limitnofiles          = undef,
+  $lazyfree_lazy_eviction        = undef,
+  $lazyfree_lazy_expire          = undef,
+  $lazyfree_lazy_server_del      = undef,
+  $slave_lazy_flush              = undef,
+  $always_show_logo              = undef,
 ) {
   include redis::install
 
