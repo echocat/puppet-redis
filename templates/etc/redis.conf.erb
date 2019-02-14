@@ -280,7 +280,8 @@ rename-command <%= command %> ""
 # errors for write operations, and this may even lead to DB inconsistency.
 #
 # maxmemory <bytes>
-<% if @redis_memory != nil -%>maxmemory <%= @redis_memory %><% end -%>
+#<% if @redis_memory != nil -%>maxmemory <%= @redis_memory %><% end -%>
+<% unless @redis_memory.nil? -%>maxmemory <%= @redis_memory %><% end -%>
 
 # MAXMEMORY POLICY: how Redis will select what to remove when maxmemory
 # is reached? You can select among five behavior:
