@@ -284,7 +284,6 @@ rename-command <%= command %> ""
 #<% unless @redis_memory.nil? -%>maxmemory <%= @redis_memory %><% end -%>
 
 maxmemory <%= @redis_memory %>
-maxmemory.type <%= @redis_memory.type %>
 
 # MAXMEMORY POLICY: how Redis will select what to remove when maxmemory
 # is reached? You can select among five behavior:
