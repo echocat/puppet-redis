@@ -19,7 +19,7 @@
 # [*redis_socketperm*]
 #   Permission of socket file. Default: 755
 # [*redis_mempolicy*]
-#   Algorithm used to manage keys. See Redis docs for possible values. Default: noeviction
+#   Algorithm used to manage keys. See Redis docs for possible values. Default: allkeys-lru
 # [*redis_memsamples*]
 #   Number of samples to use for LRU policies. Default: 3
 # [*redis_timeout*]
@@ -129,7 +129,7 @@ define redis::server (
   $redis_usesocket               = false,
   $redis_socket                  = '/tmp/redis.sock',
   $redis_socketperm              = 755,
-  $redis_mempolicy               = 'noeviction',
+  $redis_mempolicy               = 'allkeys-lru',
   $redis_memsamples              = 3,
   $redis_timeout                 = 0,
   $redis_nr_dbs                  = 1,
