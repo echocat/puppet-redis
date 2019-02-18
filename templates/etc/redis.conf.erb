@@ -374,10 +374,10 @@ maxmemory-samples <%= @redis_memsamples %>
 # in order to instead release memory in a non-blocking way like if UNLINK
 # was called, using the following configuration directives:
 
-<% if @lazyfree_lazy_eviction -%>lazyfree-lazy-eviction <%= @lazyfree_lazy_eviction %><% end %>
-<% if @lazyfree_lazy_expire -%>lazyfree-lazy-expire <%= @lazyfree_lazy_expire %><% end %>
-<% if @lazyfree_lazy_server_del -%>lazyfree-lazy-server-del <%= @lazyfree_lazy_server_del %><% end %>
-<% if @slave_lazy_flush -%>slave-lazy-flush <%= @slave_lazy_flush %><% end %>
+<% if @lazyfree_lazy_eviction -%>lazyfree-lazy-eviction <%= @lazyfree_lazy_eviction %><% end -%>
+<% if @lazyfree_lazy_expire -%>lazyfree-lazy-expire <%= @lazyfree_lazy_expire %><% end -%>
+<% if @lazyfree_lazy_server_del -%>lazyfree-lazy-server-del <%= @lazyfree_lazy_server_del %><% end -%>
+<% if @slave_lazy_flush -%>slave-lazy-flush <%= @slave_lazy_flush %><% end -%>
 
 #### END
 
