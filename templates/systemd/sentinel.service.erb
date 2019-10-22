@@ -1,6 +1,6 @@
 [Unit]
 Description=Redis Sentinel <%= @sentinel_name %>
-After=network.target
+After=network.target tuned.service
 
 [Service]
 <% if @sentinel_user and @sentinel_user != 'root' -%>
