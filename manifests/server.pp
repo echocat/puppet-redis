@@ -171,6 +171,8 @@ define redis::server (
   $cluster_require_full_coverage = true,
   $protected_mode                = undef,
   $include                       = [],
+  $redis_maxopenfiles            = 12288,
+  $redis_somaxconn               = 1024,
 ) {
   include redis::install
 
@@ -296,5 +298,10 @@ define redis::server (
     hasrestart => true,
     require    => File[$service_file],
     subscribe  => File[$conf_file],
+  }
+  exec { "sysctl -w net.core.somaxconn=${redis_somaxconn}":
+    path     => '/usr/bin:/usr/sbin:/bin',
+    provider => shell,
+    onlyif   => "test `sysctl -n net.core.somaxconn` -lt ${redis_somaxconn}",
   }
 }
