@@ -290,18 +290,20 @@ define redis::server (
     }
   }
 
+  exec { 'sysctl_redis':
+    command  => "sysctl -w net.core.somaxconn=${redis_somaxconn}",
+    path     => '/usr/bin:/usr/sbin:/bin',
+    provider => shell,
+    onlyif   => "test `sysctl -n net.core.somaxconn` -lt ${redis_somaxconn}",
+  }
+
   # manage redis service
   service { "redis-server_${redis_name}":
     ensure     => $running,
     enable     => $enabled,
     hasstatus  => true,
     hasrestart => true,
-    require    => File[$service_file],
+    require    => [File[$service_file],Exec['sysctl_redis']],
     subscribe  => File[$conf_file],
-  }
-  exec { "sysctl -w net.core.somaxconn=${redis_somaxconn}":
-    path     => '/usr/bin:/usr/sbin:/bin',
-    provider => shell,
-    onlyif   => "test `sysctl -n net.core.somaxconn` -lt ${redis_somaxconn}",
   }
 }
