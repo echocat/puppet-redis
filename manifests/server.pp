@@ -304,6 +304,6 @@ define redis::server (
     hasstatus  => true,
     hasrestart => true,
     require    => [File[$service_file],Exec['sysctl_redis']],
-    subscribe  => File[$conf_file],
+    subscribe  => [File[$conf_file],Exec['sysctl_redis']],
   }
 }
