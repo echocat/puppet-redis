@@ -552,6 +552,12 @@ run with redis 2.8 or later.
 
 Configure logrotate rules for redis server. Default: true
 
+##### `sentinel_maxopenfiles`
+Systemd LimitNOFILE change to allow sentinel change maxclients. Default: 12288
+
+##### `sentinel_somaxconn`
+Sysctl change to allow sentinel change TCP backlog. Default: 1024
+
 ## Limitations
 
 This module is tested on CentOS 6.5 and Debian 7 (Wheezy) and should also run without problems on
