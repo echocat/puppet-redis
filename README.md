@@ -420,6 +420,14 @@ Default: empty
 
 Configure logrotate rules for redis server. Default: true
 
+##### `redis_maxopenfiles`
+
+Systemd LimitNOFILE change to allow redis change maxclients. Default: 12288
+
+##### `redis_somaxconn`
+
+Sysctl change to allow redis change TCP backlog. Default: 1024
+
 ##### High Availability Options
 
 ##### `slaveof`
