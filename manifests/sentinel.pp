@@ -73,6 +73,8 @@ define redis::sentinel (
   $running          = true,
   $enabled          = true,
   $manage_logrotate = true,
+  $sentinel_maxopenfiles = 12288,
+  $sentinel_somaxconn    = 1024,
 ) {
   $sentinel_user              = $::redis::install::redis_user
   $sentinel_group             = $::redis::install::redis_group
@@ -159,13 +161,21 @@ define redis::sentinel (
     }
   }
 
+  exec { 'sysctl_sentinel':
+    command  => "sysctl -w net.core.somaxconn=${sentinel_somaxconn}",
+    path     => '/usr/bin:/usr/sbin:/bin',
+    provider => shell,
+    onlyif   => "test `sysctl -n net.core.somaxconn` -lt ${sentinel_somaxconn}",
+  }
+
   # manage sentinel service
   service { "redis-sentinel_${sentinel_name}":
     ensure     => $running,
     enable     => $enabled,
     hasstatus  => true,
     hasrestart => true,
-    subscribe  => File[$conf_file],
+    require    => Exec['sysctl_sentinel'],
+    subscribe  => [File[$conf_file],Exec['sysctl_sentinel']],
   }
 
   if ($manage_logrotate == true){
