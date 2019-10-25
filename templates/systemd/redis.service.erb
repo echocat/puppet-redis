@@ -16,6 +16,7 @@ ExecStart=/usr/bin/redis-server <%= @redis_run_dir %>/<%= @conf_file_name %> --d
 ExecStop=/usr/bin/redis-cli -p <%= @redis_port %> shutdown
 User=<%= @redis_user or 'root' %>
 Group=<%= @redis_group or 'root' %>
+LimitNOFILE=<%= @redis_maxopenfiles %>
 
 [Install]
 WantedBy=multi-user.target
